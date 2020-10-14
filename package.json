@@ -1,0 +1,37 @@
+{
+	"name": "eth-observer",
+	"version": "0.1.0",
+	"description": "Ethereum pending transaction observer, a part of poonkt.io exchange",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon",
+		"lint": "npx eslint . --ext .ts,.tsx",
+		"test": "jest --coverage"
+	},
+	"keywords": [
+		"ethereum",
+		"eth",
+		"ether",
+		"web3",
+		"transaction",
+		"pending",
+		"confirmed",
+		"observer",
+		"watch"
+	],
+	"author": "Vitaly Snitovets",
+	"license": "LGPL-3.0 License",
+	"devDependencies": {
+		"@types/jest": "^26.0.14",
+		"@typescript-eslint/eslint-plugin": "^4.4.1",
+		"@typescript-eslint/parser": "^4.4.1",
+		"eslint": "^7.11.0",
+		"eslint-config-prettier": "^6.12.0",
+		"eslint-plugin-jest": "^24.1.0",
+		"jest": "^26.5.3",
+		"nodemon": "^2.0.5",
+		"ts-jest": "^26.4.1",
+		"ts-node": "^9.0.0",
+		"typescript": "^4.0.3"
+	}
+}
