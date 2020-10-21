@@ -12,3 +12,5 @@ export interface IEventBus extends EventEmitter {
 	): this;
 	once(event: "newBlock", listener: (blockNumber: number) => void): this;
 }
+
+export type TransactionState = "pending" | "in-block" | "confirmed";

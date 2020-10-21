@@ -1,1 +1,1 @@
-module.exports = require("./lib/eth-blockchain-observer");
+module.exports = require("./dist").default;
