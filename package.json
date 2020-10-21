@@ -1,6 +1,6 @@
 {
 	"name": "eth-observer",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Ethereum pending transaction observer, a part of poonkt.io exchange",
 	"main": "index.js",
 	"scripts": {
@@ -20,7 +20,10 @@
 		"watch"
 	],
 	"author": "Vitaly Snitovets",
-	"license": "LGPL-3.0 License",
+	"license": "LGPL-3.0",
+	"dependencies": {
+		"web3": "^1.3.0"
+	},
 	"devDependencies": {
 		"@types/jest": "^26.0.14",
 		"@typescript-eslint/eslint-plugin": "^4.4.1",

@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  geth:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - geth-dev:/root/.ethereum
+      - geth-dev:/usr/ethereum
+    restart: unless-stopped
+    ports:
+      - 30303:30303
+      - 8545:8545
+      - 8546:8546
+    stop_signal: SIGINT
+    stop_grace_period: 2m
+volumes:
+  geth-dev:

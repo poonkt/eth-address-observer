@@ -1,0 +1,8 @@
+FROM node:alpine
+WORKDIR /usr/eth-observer
+COPY ./package.json ./
+RUN npm i
+COPY . .
+CMD [ "npm", "run", "dev" ]
+
+
