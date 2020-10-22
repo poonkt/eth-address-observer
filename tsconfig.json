@@ -5,7 +5,11 @@
 		"target": "ES2020",
 		"outDir": "dist/",
 		"rootDir": "src/",
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"baseUrl": "src",
+		"paths": {
+			"typings/*": ["src/typings"]
+		}
 	},
 	"exclude": ["src/testsmodules", "dist", "src/__tests__"]
 }

@@ -8,4 +8,6 @@ const observer = new EthBlockchainObserver(web3, {
 	confirmationsRequired: 5
 });
 observer.add(["0x2C19E600182232a5D09bFCF5dE2149b66Be4A7E7"]);
-observer.subscribe("pending", (transactionReceipt) => {});
+observer.subscribe("pending", (txHash) => {
+	console.log(txHash);
+});
