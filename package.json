@@ -1,7 +1,7 @@
 {
-	"name": "eth-observer",
-	"version": "0.1.1",
-	"description": "Ethereum pending transaction observer, a part of poonkt.io exchange",
+	"name": "eth-address-observer",
+	"version": "0.1.2",
+	"description": "Ethereum observer for incoming transactions, a part of poonkt.io exchange",
 	"main": "index.js",
 	"scripts": {
 		"dev": "nodemon",
@@ -13,11 +13,14 @@
 		"eth",
 		"ether",
 		"web3",
+		"wallet",
+		"address",
 		"transaction",
 		"pending",
 		"confirmed",
 		"observer",
-		"watch"
+		"watch",
+		"poonkt"
 	],
 	"author": "Vitaly Snitovets",
 	"license": "LGPL-3.0",

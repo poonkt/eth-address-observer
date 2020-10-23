@@ -1,16 +1,21 @@
-import { EventEmitter } from "events";
-
-export interface IEventBus extends EventEmitter {
-	on(
-		event: "duplicatedTransaction" | "newTransaction",
-		listener: (transactionHash: string) => void
-	): this;
-	on(event: "newBlock", listener: (blockNumber: number) => void): this;
-	once(
-		event: "duplicatedTransaction" | "newTransaction",
-		listener: (transactionHash: string) => void
-	): this;
-	once(event: "newBlock", listener: (blockNumber: number) => void): this;
+export type TransactionState = "pending" | "in-block" | "confirmed";
+export interface ICollector {
+	listen(): void;
+}
+export interface ICollectorCache {
+	add(data: number | string, cb: (error: string | null) => void): void;
 }
 
-export type TransactionState = "pending" | "in-block" | "confirmed";
+export interface ICollectorCacheConfig {
+	cacheSize: number;
+}
+export interface IBlocksCollectorCacheConfig extends ICollectorCacheConfig {
+	latestBlock: number;
+}
+
+export interface IAddressesObserverConfig {
+	latestBlock: number;
+	confirmationsRequired: number;
+	blocksCacheSize?: number;
+	transactionsCacheSize?: number;
+}

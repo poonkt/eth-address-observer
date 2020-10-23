@@ -1,1 +1,1 @@
-export { EthBlockchainObserver as default } from "./lib/observer/eth-blockchain-observer";
+export { AddressesObserverEth as default } from "./lib/addresses-observer-eth";
