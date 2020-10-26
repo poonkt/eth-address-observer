@@ -5,7 +5,7 @@ export class TransactionsCollectorCache implements ICollectorCache {
 
 	constructor(config: ICollectorCacheConfig) {
 		this.cache = [];
-		this.setup(config.cacheSize);
+		this.setup(config.transactionsCacheSize);
 	}
 
 	add(transactionHash: string, cb: (error: string | null) => void): void {

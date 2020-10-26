@@ -1,6 +1,7 @@
+import { EventEmitter } from "events";
 import { IAddressesObserverConfig } from "typings";
 
-export abstract class AddressesObserver {
+export abstract class AddressesObserver extends EventEmitter {
 	watchList: string[];
 
 	constructor(config: IAddressesObserverConfig) {
@@ -10,6 +11,7 @@ export abstract class AddressesObserver {
 		) {
 			throw new Error("Required config fields are not specified!");
 		}
+		super();
 		this.watchList = [];
 		config.blocksCacheSize = config.blocksCacheSize || 64;
 		config.transactionsCacheSize = config.transactionsCacheSize || 32;

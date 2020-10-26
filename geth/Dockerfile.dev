@@ -1,3 +1,3 @@
 FROM ethereum/client-go:alltools-stable
 WORKDIR /usr/ethereum
-CMD [ "geth", "--datadir", "data", "--ethash.dagdir", "dagdir", "--http", "--http.addr", "0.0.0.0", "--ws", "--ws.addr", "0.0.0.0", "--nousb", "--dev", "--dev.period", "5" ]
+CMD [ "geth", "--datadir", "data", "--ethash.dagdir", "dagdir", "--http", "--http.addr", "0.0.0.0", "--ws", "--ws.addr", "0.0.0.0", "--nousb", "--dev", "--dev.period", "4" ]
