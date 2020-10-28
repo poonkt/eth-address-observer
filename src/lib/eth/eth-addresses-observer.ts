@@ -52,4 +52,20 @@ export class EthAddressesObserver
 	subscribe<T>(type: SubscriptionType, handler: (data: T) => void): void {
 		this.ethTransactionsManager.on(type, handler);
 	}
+
+	toBigInt(address: string): bigint {
+		return BigInt(address);
+	}
+
+	toAddress(number: bigint): string {
+		const hex = number.toString(16);
+		const address =
+			"0x" +
+			Array(40 - hex.length)
+				.fill(0)
+				.join("") +
+			hex;
+
+		return address;
+	}
 }

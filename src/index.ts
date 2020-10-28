@@ -10,7 +10,19 @@ const observer = new EthAddressesObserver(web3, {
 	confirmationsRequired: 12
 });
 
-observer.add(["0x2C19E600182232a5D09bFCF5dE2149b66Be4A7E7"]);
+// adding many addresses for testing performance
+for (let i = 0; i < 10000000; i++) {
+	const hex = i.toString(16);
+	const address =
+		"0x" +
+		Array(40 - hex.length)
+			.fill(0)
+			.join("") +
+		hex;
+
+	observer.add(address);
+}
+observer.add("0x2C19E600182232a5D09bFCF5dE2149b66Be4A7E7");
 
 observer.subscribe("pending", (transaction) => {
 	console.log(
@@ -32,6 +44,6 @@ observer.subscribe("dropped", (transaction) => {
 });
 observer.subscribe("confirmed", (transaction) => {
 	console.log(
-		`${transaction.to}: transaction ${transaction.transactionHash} now at CONFIRMED state, block: ${transaction.blockNumber}, removing from watch-list`
+		`${transaction.to}: transaction: ${transaction.transactionHash} now at CONFIRMED state, block: ${transaction.blockNumber}, removing from watch-list`
 	);
 });

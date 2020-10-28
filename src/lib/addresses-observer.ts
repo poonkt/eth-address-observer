@@ -1,8 +1,9 @@
 import { EventEmitter } from "events";
 import { IAddressesObserverConfig } from "typings";
+import { RBTree } from "../vendor/bintrees";
 
 export abstract class AddressesObserver extends EventEmitter {
-	watchList: string[];
+	watchList: RBTree<bigint>;
 
 	constructor(config: IAddressesObserverConfig) {
 		if (
@@ -12,14 +13,19 @@ export abstract class AddressesObserver extends EventEmitter {
 			throw new Error("Required config fields are not specified!");
 		}
 		super();
-		this.watchList = [];
+		this.watchList = new RBTree((a: bigint, b: bigint) => a - b);
 		config.blocksCacheSize = config.blocksCacheSize || 64;
 		config.transactionsCacheSize = config.transactionsCacheSize || 32;
 	}
 
 	add(address: string | string[], cb?: (error: Error | null) => void): void {
-		if (Array.isArray(address)) this.watchList.push(...address);
-		else if (typeof address === "string") this.watchList.push(address);
+		if (Array.isArray(address)) {
+			address.forEach((item) => {
+				const number = this.toBigInt(item);
+				this.watchList.insert(number);
+			});
+		} else if (typeof address === "string")
+			this.watchList.insert(this.toBigInt(address));
 		else
 			cb(
 				new Error("TypeError: add() accepts only string or array of strings!")
@@ -27,11 +33,14 @@ export abstract class AddressesObserver extends EventEmitter {
 	}
 
 	remove(address: string | string[], cb?: (error: Error | null) => void): void {
-		if (Array.isArray(address))
-			this.watchList.filter((item) => !address.includes(item));
-		else if (typeof address === "string")
-			this.watchList.filter((item) => item !== address);
-		else
+		if (Array.isArray(address)) {
+			address.forEach((item) => {
+				const number = this.toBigInt(item);
+				this.watchList.remove(number);
+			});
+		} else if (typeof address === "string") {
+			this.watchList.remove(this.toBigInt(address));
+		} else
 			cb(
 				new Error(
 					"TypeError: remove() accepts only string or array of strings!"
@@ -40,6 +49,15 @@ export abstract class AddressesObserver extends EventEmitter {
 	}
 
 	get list(): string[] {
-		return this.watchList;
+		const arr = [];
+		this.watchList.each((number: bigint) => {
+			arr.push(this.toAddress(number));
+		});
+
+		return arr;
 	}
+
+	abstract toAddress(number: bigint): unknown;
+
+	abstract toBigInt(address: unknown): bigint;
 }

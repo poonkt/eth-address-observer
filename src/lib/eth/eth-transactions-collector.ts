@@ -2,15 +2,20 @@ import { ICollector, ICollectorCacheConfig } from "typings";
 import Web3 from "web3";
 import { EventEmitter } from "events";
 import { TransactionsCollectorCache } from "../transactions-collector-cache";
+import { RBTree } from "../../vendor/bintrees";
 
 export class EthTransactionsCollector
 	extends EventEmitter
 	implements ICollector {
 	private readonly web3: Web3;
 	private readonly transactionsCollectorCache: TransactionsCollectorCache;
-	private readonly watchList: string[];
+	private readonly watchList: RBTree<bigint>;
 
-	constructor(web3: Web3, watchList: string[], config: ICollectorCacheConfig) {
+	constructor(
+		web3: Web3,
+		watchList: RBTree<bigint>,
+		config: ICollectorCacheConfig
+	) {
 		super();
 		this.web3 = web3;
 		this.watchList = watchList;
@@ -24,6 +29,7 @@ export class EthTransactionsCollector
 			.subscribe("pendingTransactions")
 			.on("data", async (transactionHash) => {
 				const foundTransaction = await this.search(transactionHash);
+
 				if (!foundTransaction) return;
 
 				this.transactionsCollectorCache.add(foundTransaction, (error) => {
@@ -37,8 +43,12 @@ export class EthTransactionsCollector
 			});
 	}
 
-	private async search(transactionHash: string): Promise<string> | null {
+	private async search(transactionHash: string): Promise<string> | undefined {
 		const transaction = await this.web3.eth.getTransaction(transactionHash);
-		return this.watchList.includes(transaction?.to) ? transactionHash : null;
+
+		if (!transaction?.to) return;
+
+		if (this.watchList.find(BigInt(transaction.to)) === null) return;
+		return transactionHash;
 	}
 }
