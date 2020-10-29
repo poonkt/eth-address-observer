@@ -38,18 +38,21 @@ export class EthAddressesObserver
 
 	subscribe(type: "pending", handler: (transaction: Transaction) => void): void;
 	subscribe(
-		type: "in-block",
-		handler: (transaction: [TransactionReceipt, number]) => void
+		type: "confirmation",
+		handler: (
+			confirmationNumber: number,
+			transactionReceipt: TransactionReceipt
+		) => void
 	): void;
 	subscribe(
 		type: "dropped",
-		handler: (transaction: TransactionReceipt) => void
+		handler: (transactionReceipt: TransactionReceipt) => void
 	): void;
 	subscribe(
-		type: "confirmed",
-		handler: (transaction: TransactionReceipt) => void
+		type: "success",
+		handler: (transactionReceipt: TransactionReceipt) => void
 	): void;
-	subscribe<T>(type: SubscriptionType, handler: (data: T) => void): void {
+	subscribe<T>(type: SubscriptionType, handler: (...args: T[]) => void): void {
 		this.ethTransactionsManager.on(type, handler);
 	}
 

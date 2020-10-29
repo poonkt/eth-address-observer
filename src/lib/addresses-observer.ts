@@ -18,34 +18,18 @@ export abstract class AddressesObserver extends EventEmitter {
 		config.transactionsCacheSize = config.transactionsCacheSize || 32;
 	}
 
-	add(address: string | string[], cb?: (error: Error | null) => void): void {
+	add(address: string | string[]): void {
 		if (Array.isArray(address)) {
-			address.forEach((item) => {
-				const number = this.toBigInt(item);
-				this.watchList.insert(number);
-			});
+			address.forEach((item) => this.watchList.insert(this.toBigInt(item)));
 		} else if (typeof address === "string")
 			this.watchList.insert(this.toBigInt(address));
-		else
-			cb(
-				new Error("TypeError: add() accepts only string or array of strings!")
-			);
 	}
 
-	remove(address: string | string[], cb?: (error: Error | null) => void): void {
+	remove(address: string | string[]): void {
 		if (Array.isArray(address)) {
-			address.forEach((item) => {
-				const number = this.toBigInt(item);
-				this.watchList.remove(number);
-			});
-		} else if (typeof address === "string") {
+			address.forEach((item) => this.watchList.remove(this.toBigInt(item)));
+		} else if (typeof address === "string")
 			this.watchList.remove(this.toBigInt(address));
-		} else
-			cb(
-				new Error(
-					"TypeError: remove() accepts only string or array of strings!"
-				)
-			);
 	}
 
 	get list(): string[] {
