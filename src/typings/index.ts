@@ -1,4 +1,8 @@
-export type SubscriptionType = "pending" | "in-block" | "confirmed" | "dropped";
+export type SubscriptionType =
+	| "pending"
+	| "confirmation"
+	| "success"
+	| "dropped";
 export interface IEthAddressesObserver {
 	subscribe<T>(type: SubscriptionType, handler: (data: T) => void): void;
 }

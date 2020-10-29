@@ -3,10 +3,10 @@ services:
   geth:
     build:
       context: ./geth
-      dockerfile: Dockerfile.goerli
+      dockerfile: Dockerfile.dev
     volumes:
-      - geth-goerli:/root/.ethereum
-      - geth-goerli:/usr/ethereum
+      - geth-dev:/root/.ethereum
+      - geth-dev:/usr/ethereum
     restart: unless-stopped
     ports:
       - 30303:30303
@@ -14,11 +14,11 @@ services:
       - 8546:8546
     stop_signal: SIGINT
     stop_grace_period: 2m
-  eth-addresses-observer:
+  eth-address-observer:
     build:
       context: .
-      dockerfile: Dockerfile.goerli
+      dockerfile: Dockerfile.dev
     volumes:
       - .:/usr/eth-addresses-observer
 volumes:
-  geth-goerli:
+  geth-dev:

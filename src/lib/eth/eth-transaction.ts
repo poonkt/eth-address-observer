@@ -21,11 +21,11 @@ export class EthTransaction extends EventEmitter {
 	}
 
 	async process(latestBlockNumber: number): Promise<void> {
-		const receipt = await this.web3.eth.getTransactionReceipt(
+		const transactionReceipt = await this.web3.eth.getTransactionReceipt(
 			this.transactionHash
 		);
 
-		if (!receipt) {
+		if (!transactionReceipt) {
 			const transaction = await this.web3.eth.getTransaction(
 				this.transactionHash
 			);
@@ -33,17 +33,18 @@ export class EthTransaction extends EventEmitter {
 
 			this.blockHash = transaction.blockHash;
 		} else {
-			const confirmations = latestBlockNumber - receipt.blockNumber;
+			const confirmationNumber =
+				latestBlockNumber - transactionReceipt.blockNumber;
 
-			if (this.blockHash !== receipt.blockHash) {
-				this.emit("dropped", receipt);
-			} else if (confirmations >= this.confirmationsRequired) {
-				this.emit("confirmed", receipt);
+			if (this.blockHash !== transactionReceipt.blockHash) {
+				this.emit("dropped", transactionReceipt);
+			} else if (confirmationNumber >= this.confirmationsRequired) {
+				this.emit("success", transactionReceipt);
 			} else {
-				this.emit("in-block", [receipt, confirmations]);
+				this.emit("confirmation", confirmationNumber, transactionReceipt);
 			}
 
-			this.blockHash = receipt.blockHash;
+			this.blockHash = transactionReceipt.blockHash;
 		}
 	}
 }
