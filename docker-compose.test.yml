@@ -3,7 +3,7 @@ services:
   geth:
     build:
       context: ./geth
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.test
     volumes:
       - geth-dev:/root/.ethereum
       - geth-dev:/usr/ethereum
@@ -17,7 +17,7 @@ services:
   eth-address-observer:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.test
     volumes:
       - .:/usr/eth-addresses-observer
 volumes:
