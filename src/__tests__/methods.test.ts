@@ -1,20 +1,18 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-jest.useFakeTimers("modern");
-
 import Web3 from "web3";
 import EthAddressesObserver from "..";
 import { addressGenerator } from "./utils/address-generator";
 
-const wsProviderTestnet = new Web3.providers.WebsocketProvider(
-	process.env.WS_PROVIDER_TESTNET
+const provider = new Web3.providers.WebsocketProvider(
+	`ws://${process.env.HOST}`
 );
-const web3Testnet = new Web3(wsProviderTestnet);
+const web3 = new Web3(provider);
 
 describe("add()", () => {
-	test("Should insert 1000000 addresses to watch-list (string)", () => {
-		const observer = new EthAddressesObserver(web3Testnet, {
+	test("Should insert 1000000 addresses to watch-list (string)", async () => {
+		const observer = new EthAddressesObserver(web3, {
 			latestBlock: 0,
 			confirmationsRequired: 12
 		});
@@ -28,8 +26,8 @@ describe("add()", () => {
 		expect(observer.list.length).toBe(length);
 	});
 
-	test("Should insert 1000000 addresses to watch-list (array)", () => {
-		const observer = new EthAddressesObserver(web3Testnet, {
+	test("Should insert 1000000 addresses to watch-list (array)", async () => {
+		const observer = new EthAddressesObserver(web3, {
 			latestBlock: 0,
 			confirmationsRequired: 12
 		});
@@ -47,8 +45,8 @@ describe("add()", () => {
 });
 
 describe("remove()", () => {
-	test("Should remove 950000 addresses from watch-list of 1000000 addresses (string)", () => {
-		const observer = new EthAddressesObserver(web3Testnet, {
+	test("Should remove 950000 addresses from watch-list of 1000000 addresses (string)", async () => {
+		const observer = new EthAddressesObserver(web3, {
 			latestBlock: 0,
 			confirmationsRequired: 12
 		});
@@ -72,8 +70,8 @@ describe("remove()", () => {
 		expect(observer.list.length).toBe(length - length2);
 	});
 
-	test("Should remove 950000 addresses from watch-list of 1000000 addresses (array)", () => {
-		const observer = new EthAddressesObserver(web3Testnet, {
+	test("Should remove 950000 addresses from watch-list of 1000000 addresses (array)", async () => {
+		const observer = new EthAddressesObserver(web3, {
 			latestBlock: 0,
 			confirmationsRequired: 12
 		});
@@ -95,8 +93,8 @@ describe("remove()", () => {
 });
 
 describe("random tests", () => {
-	test("Should randomly add(), remove()", () => {
-		const observer = new EthAddressesObserver(web3Testnet, {
+	test("Should randomly add(), remove()", async () => {
+		const observer = new EthAddressesObserver(web3, {
 			latestBlock: 0,
 			confirmationsRequired: 12
 		});

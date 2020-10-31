@@ -1,6 +1,6 @@
 FROM node:alpine
-WORKDIR /usr/eth-addresses-observer
+WORKDIR /usr/eth-address-observer
 COPY ./package.json ./
 RUN npm i
 COPY . .
-CMD [ "npm", "run", "test" ]
+CMD [ "npm", "t" ]
