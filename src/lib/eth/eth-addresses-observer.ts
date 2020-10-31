@@ -1,6 +1,12 @@
+/**
+ * @file eth-addresses-observer.ts
+ * @author Vitaly Snitovets <v.snitovets@gmail.com>
+ * @date 2020
+ */
 import {
 	IAddressesObserverConfig,
 	IEthAddressesObserver,
+	IEthAddressesObserverConfig,
 	SubscriptionType
 } from "typings";
 import Web3 from "web3";
@@ -17,16 +23,23 @@ export class EthAddressesObserver
 	ethTransactionsCollector: EthTransactionsCollector;
 	ethTransactionsManager: EthTransactionsManager;
 
-	constructor(web3: Web3, config: IAddressesObserverConfig) {
-		super(config);
+	constructor(web3: Web3, config: IEthAddressesObserverConfig = {}) {
+		config.confirmationsRequired = config.confirmationsRequired || 12;
+		super(config as IAddressesObserverConfig);
 
-		this.ethBlocksCollector = new EthBlocksCollector(web3, config);
+		this.ethBlocksCollector = new EthBlocksCollector(
+			web3,
+			config.blocksCacheSize
+		);
 		this.ethTransactionsCollector = new EthTransactionsCollector(
 			web3,
 			this.watchList,
-			config
+			config.transactionsCacheSize
 		);
-		this.ethTransactionsManager = new EthTransactionsManager(web3, config);
+		this.ethTransactionsManager = new EthTransactionsManager(
+			web3,
+			config.confirmationsRequired
+		);
 
 		this.ethTransactionsCollector.on("new-transaction", (transactionHash) => {
 			this.ethTransactionsManager.add(transactionHash);

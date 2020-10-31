@@ -1,3 +1,8 @@
+/**
+ * @file addresses-observer.ts
+ * @author Vitaly Snitovets <v.snitovets@gmail.com>
+ * @date 2020
+ */
 import { EventEmitter } from "events";
 import { IAddressesObserverConfig } from "typings";
 import { RBTree } from "../vendor/bintrees";
@@ -6,10 +11,7 @@ export abstract class AddressesObserver extends EventEmitter {
 	watchList: RBTree<bigint>;
 
 	constructor(config: IAddressesObserverConfig) {
-		if (
-			config.latestBlock === undefined ||
-			config.confirmationsRequired === undefined
-		) {
+		if (config.confirmationsRequired === undefined) {
 			throw new Error("Required config fields are not specified!");
 		}
 		super();

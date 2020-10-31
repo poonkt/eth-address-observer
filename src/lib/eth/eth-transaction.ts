@@ -1,4 +1,8 @@
-import { IEthTransactionConfig } from "typings";
+/**
+ * @file eth-transaction.ts
+ * @author Vitaly Snitovets <v.snitovets@gmail.com>
+ * @date 2020
+ */
 import { EventEmitter } from "events";
 import Web3 from "web3";
 
@@ -12,12 +16,12 @@ export class EthTransaction extends EventEmitter {
 	constructor(
 		web3: Web3,
 		transactionHash: string,
-		config: IEthTransactionConfig
+		confirmationsRequired: number
 	) {
 		super();
 		this.web3 = web3;
 		this.transactionHash = transactionHash;
-		this.confirmationsRequired = config.confirmationsRequired;
+		this.confirmationsRequired = confirmationsRequired;
 	}
 
 	async process(latestBlockNumber: number): Promise<void> {

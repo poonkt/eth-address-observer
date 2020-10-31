@@ -1,3 +1,8 @@
+/**
+ * @file methods.test.ts
+ * @author Vitaly Snitovets <v.snitovets@gmail.com>
+ * @date 2020
+ */
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -12,10 +17,7 @@ const web3 = new Web3(provider);
 
 describe("add()", () => {
 	test("Should insert 1000000 addresses to watch-list (string)", async () => {
-		const observer = new EthAddressesObserver(web3, {
-			latestBlock: 0,
-			confirmationsRequired: 12
-		});
+		const observer = new EthAddressesObserver(web3);
 
 		const generator = addressGenerator();
 		const length = 1000000;
@@ -27,10 +29,7 @@ describe("add()", () => {
 	});
 
 	test("Should insert 1000000 addresses to watch-list (array)", async () => {
-		const observer = new EthAddressesObserver(web3, {
-			latestBlock: 0,
-			confirmationsRequired: 12
-		});
+		const observer = new EthAddressesObserver(web3);
 
 		const generator = addressGenerator();
 		const length = 1000000;
@@ -46,10 +45,7 @@ describe("add()", () => {
 
 describe("remove()", () => {
 	test("Should remove 950000 addresses from watch-list of 1000000 addresses (string)", async () => {
-		const observer = new EthAddressesObserver(web3, {
-			latestBlock: 0,
-			confirmationsRequired: 12
-		});
+		const observer = new EthAddressesObserver(web3);
 
 		const generator = addressGenerator();
 		const length = 1000000;
@@ -71,10 +67,7 @@ describe("remove()", () => {
 	});
 
 	test("Should remove 950000 addresses from watch-list of 1000000 addresses (array)", async () => {
-		const observer = new EthAddressesObserver(web3, {
-			latestBlock: 0,
-			confirmationsRequired: 12
-		});
+		const observer = new EthAddressesObserver(web3);
 
 		const generator = addressGenerator();
 		const length = 1000000;
@@ -94,10 +87,7 @@ describe("remove()", () => {
 
 describe("random tests", () => {
 	test("Should randomly add(), remove()", async () => {
-		const observer = new EthAddressesObserver(web3, {
-			latestBlock: 0,
-			confirmationsRequired: 12
-		});
+		const observer = new EthAddressesObserver(web3);
 		const command = ["add", "remove"];
 		const commandsList = [];
 

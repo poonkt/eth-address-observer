@@ -1,4 +1,9 @@
-import { ICollector, ICollectorCacheConfig } from "typings";
+/**
+ * @file eth-transactions-collector.ts
+ * @author Vitaly Snitovets <v.snitovets@gmail.com>
+ * @date 2020
+ */
+import { ICollector } from "typings";
 import Web3 from "web3";
 import { EventEmitter } from "events";
 import { TransactionsCollectorCache } from "../transactions-collector-cache";
@@ -14,12 +19,14 @@ export class EthTransactionsCollector
 	constructor(
 		web3: Web3,
 		watchList: RBTree<bigint>,
-		config: ICollectorCacheConfig
+		transactionsCacheSize: number
 	) {
 		super();
 		this.web3 = web3;
 		this.watchList = watchList;
-		this.transactionsCollectorCache = new TransactionsCollectorCache(config);
+		this.transactionsCollectorCache = new TransactionsCollectorCache(
+			transactionsCacheSize
+		);
 
 		this.listen();
 	}

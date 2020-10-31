@@ -1,11 +1,16 @@
-import { IBlocksCollectorCacheConfig, ICollectorCache } from "typings";
+/**
+ * @file blocks-collector-cache.ts
+ * @author Vitaly Snitovets <v.snitovets@gmail.com>
+ * @date 2020
+ */
+import { ICollectorCache } from "typings";
 
 export class BlocksCollectorCache implements ICollectorCache {
 	private readonly cache: number[];
 
-	constructor(config: IBlocksCollectorCacheConfig) {
-		this.cache = [config.latestBlock];
-		this.setup(config.blocksCacheSize);
+	constructor(blocksCacheSize: number) {
+		this.cache = [];
+		this.setup(blocksCacheSize);
 	}
 
 	add(blockNumber: number, cb: (error: string | null) => void): void {
@@ -19,6 +24,7 @@ export class BlocksCollectorCache implements ICollectorCache {
 
 	private setup(cacheSize: number): void {
 		this.cache.push = function (blockNumber: number) {
+			console.log(blockNumber);
 			if (this.length >= cacheSize) {
 				this.shift();
 			}

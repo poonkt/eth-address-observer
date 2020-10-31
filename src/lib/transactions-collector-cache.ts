@@ -1,11 +1,16 @@
-import { ICollectorCache, ICollectorCacheConfig } from "typings";
+/**
+ * @file transactions-collector-cache.ts
+ * @author Vitaly Snitovets <v.snitovets@gmail.com>
+ * @date 2020
+ */
+import { ICollectorCache } from "typings";
 
 export class TransactionsCollectorCache implements ICollectorCache {
 	private readonly cache: string[];
 
-	constructor(config: ICollectorCacheConfig) {
+	constructor(transactionsCacheSize: number) {
 		this.cache = [];
-		this.setup(config.transactionsCacheSize);
+		this.setup(transactionsCacheSize);
 	}
 
 	add(transactionHash: string, cb: (error: string | null) => void): void {
