@@ -1,9 +1,8 @@
-name: CI:STAGED
-
+name: ci
 on:
   pull_request:
-    branches: [master]
-
+    branches:
+      - master
 jobs:
   test:
     runs-on: ubuntu-latest
