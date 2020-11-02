@@ -1,8 +1,6 @@
-name: CI
+name: CI:STAGED
 
 on:
-  push:
-    branches: [master]
   pull_request:
     branches: [master]
 
