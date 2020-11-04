@@ -1,0 +1,14 @@
+.env
+.github
+.vscode
+.dockerignore
+.eslintignore
+.eslintrc
+.prettierrc
+docker-compose.*
+Dockerfile.*
+jest.config.js
+nodemon.json
+__tests__
+geth
+assets

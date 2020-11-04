@@ -1,0 +1,52 @@
+{
+	"name": "eth-address-observer",
+	"version": "0.1.13",
+	"description": "Ethereum addresses observer is the library of poonkt.io exchange",
+	"main": "dist/lib/eth/eth-addresses-observer.js",
+	"scripts": {
+		"dev": "nodemon",
+		"lint": "npx eslint . --ext .ts,.tsx",
+		"test": "jest --forceExit"
+	},
+	"keywords": [
+		"eth",
+		"ether",
+		"ethereum",
+		"web3",
+		"wallet",
+		"address",
+		"transaction",
+		"pending",
+		"confirmed",
+		"observer",
+		"watch",
+		"poonkt"
+	],
+	"author": "Vitaly Snitovets",
+	"license": "LGPL-3.0-or-later",
+	"dependencies": {
+		"web3": "^1.3.0"
+	},
+	"devDependencies": {
+		"@types/jest": "^26.0.14",
+		"@typescript-eslint/eslint-plugin": "^4.4.1",
+		"@typescript-eslint/parser": "^4.4.1",
+		"dotenv": "^8.2.0",
+		"eslint": "^7.11.0",
+		"eslint-config-prettier": "^6.12.0",
+		"eslint-plugin-jest": "^24.1.0",
+		"jest": "^26.5.3",
+		"nodemon": "^2.0.5",
+		"ts-jest": "^26.4.1",
+		"ts-node": "^9.0.0",
+		"typescript": "^4.0.3"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Snitovets/eth-address-observer.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Snitovets/eth-address-observer/issues"
+	},
+	"homepage": "https://github.com/Snitovets/eth-address-observer#readme"
+}

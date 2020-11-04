@@ -1,0 +1,11 @@
+FROM node:alpine as base
+WORKDIR /usr/eth-address-observer
+COPY ./package.json ./
+RUN npm i
+COPY . .
+
+FROM base as lint
+CMD ["npm", "run", "lint"]
+
+FROM lint as test
+CMD [ "npm", "t" ]
