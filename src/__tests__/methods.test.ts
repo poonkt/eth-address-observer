@@ -21,7 +21,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import Web3 from "web3";
-import { EthAddressesObserver } from "../lib/eth/eth-addresses-observer";
+import EthAddressesObserver from "../lib/eth/eth-addresses-observer";
 import { addressGenerator } from "./utils/address-generator";
 
 const provider = new Web3.providers.WebsocketProvider(

@@ -19,7 +19,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import { EventEmitter } from "events";
-import { IAddressesObserverConfig } from "../typings";
+import { IAddressesObserverConfig } from "typings";
 import RBTree from "../vendor/bintrees/lib/rbtree";
 
 export abstract class AddressesObserver extends EventEmitter {

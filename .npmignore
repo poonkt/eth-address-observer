@@ -12,3 +12,4 @@ nodemon.json
 __tests__
 geth
 assets
+src
