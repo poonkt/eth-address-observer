@@ -21,7 +21,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 import Web3 from "web3";
 import { EventEmitter } from "events";
 import { BlocksCollectorCache } from "../blocks-collector-cache";
-import { ICollector } from "../../typings";
+import { ICollector } from "typings";
 
 export class EthBlocksCollector extends EventEmitter implements ICollector {
 	private readonly web3: Web3;

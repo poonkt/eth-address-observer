@@ -6,8 +6,12 @@
 		"outDir": "dist/",
 		"rootDir": "src/",
 		"allowJs": true,
-		"declaration": true,
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"importHelpers": true,
+		"baseUrl": ".",
+		"paths": {
+			"typings": ["typings"]
+		}
 	},
 	"exclude": ["dist", "src/__tests__", "jest.config.js"]
 }

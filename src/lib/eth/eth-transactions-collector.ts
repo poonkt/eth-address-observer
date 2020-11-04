@@ -18,7 +18,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2020
  */
 
-import { ICollector } from "../../typings";
+import { ICollector } from "typings";
 import Web3 from "web3";
 import { EventEmitter } from "events";
 import { TransactionsCollectorCache } from "../transactions-collector-cache";

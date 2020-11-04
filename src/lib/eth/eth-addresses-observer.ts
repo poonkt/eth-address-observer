@@ -23,7 +23,7 @@ import {
 	IEthAddressesObserverConfig,
 	IAddressesObserverConfig,
 	SubscriptionType
-} from "../../typings";
+} from "typings";
 import Web3 from "web3";
 import { TransactionReceipt, Transaction } from "web3-core";
 import { AddressesObserver } from "../addresses-observer";
@@ -31,7 +31,7 @@ import { EthBlocksCollector } from "./eth-blocks-collector";
 import { EthTransactionsCollector } from "./eth-transactions-collector";
 import { EthTransactionsManager } from "./eth-transactions-manager";
 
-export class EthAddressesObserver
+export default class EthAddressesObserver
 	extends AddressesObserver
 	implements IEthAddressesObserver {
 	ethBlocksCollector: EthBlocksCollector;

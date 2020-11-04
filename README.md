@@ -22,7 +22,8 @@ npm install eth-address-observer
 
 ```js
 const Web3 = require("web3");
-const { EthAddressesObserver } = require("eth-address-observer");
+const EthAddressObserver = require("eth-address-observer");
+import EthAddressObserver from 'eth-address-observer' // or
 
 /** Requires exactly websocket provider,
  * also be careful using cloud providers,
@@ -33,7 +34,7 @@ const web3 = new Web3("ws://localhost:8546");
 const config = {
 	confirmationsRequired: 12; // default
 };
-const observer = new EthAddressesObserver(web3, config);
+const observer = new EthAddressObserver(web3, config);
 ```
 
 Adding, removing and listing:
