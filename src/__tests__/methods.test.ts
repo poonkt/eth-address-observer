@@ -22,7 +22,8 @@ dotenv.config();
 
 import Web3 from "web3";
 import EthAddressesObserver from "../lib/eth/eth-addresses-observer";
-import { addressGenerator } from "./utils/address-generator";
+import { addressGenerator } from "./utils/address";
+const generator = addressGenerator();
 
 const provider = new Web3.providers.WebsocketProvider(
 	`ws://${process.env.HOST}`
@@ -33,7 +34,6 @@ describe("add()", () => {
 	test("Should insert 1000000 addresses to watch-list (string)", async () => {
 		const observer = new EthAddressesObserver(web3);
 
-		const generator = addressGenerator();
 		const length = 1000000;
 		for (let i = 0; i < length; i++) {
 			observer.add(generator.next().value);
@@ -45,7 +45,6 @@ describe("add()", () => {
 	test("Should insert 1000000 addresses to watch-list (array)", async () => {
 		const observer = new EthAddressesObserver(web3);
 
-		const generator = addressGenerator();
 		const length = 1000000;
 		const arr = [];
 		for (let i = 0; i < length; i++) {
@@ -61,7 +60,6 @@ describe("remove()", () => {
 	test("Should remove 950000 addresses from watch-list of 1000000 addresses (string)", async () => {
 		const observer = new EthAddressesObserver(web3);
 
-		const generator = addressGenerator();
 		const length = 1000000;
 		const addresses = [];
 		for (let i = 0; i < length; i++) {
@@ -83,7 +81,6 @@ describe("remove()", () => {
 	test("Should remove 950000 addresses from watch-list of 1000000 addresses (array)", async () => {
 		const observer = new EthAddressesObserver(web3);
 
-		const generator = addressGenerator();
 		const length = 1000000;
 		const addresses = [];
 		for (let i = 0; i < length; i++) {
@@ -110,7 +107,6 @@ describe("random tests", () => {
 			commandsList.push(command[random]);
 		}
 
-		const generator = addressGenerator();
 		const addresses = [];
 		for (let i = 0; i < 1000000; i++) {
 			addresses.push(generator.next().value);

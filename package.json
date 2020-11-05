@@ -1,13 +1,14 @@
 {
 	"name": "eth-address-observer",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Ethereum addresses observer is the library of poonkt.io exchange",
 	"main": "dist/index.js",
 	"typings": "typings/index.d.ts",
 	"scripts": {
 		"dev": "nodemon",
 		"lint": "npx eslint . --ext .ts,.tsx",
-		"test": "jest --forceExit"
+		"test": "jest --forceExit",
+		"test:watch": "jest --watch"
 	},
 	"keywords": [
 		"eth",

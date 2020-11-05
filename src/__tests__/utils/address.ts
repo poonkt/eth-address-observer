@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License
 along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 */
 /**
- * @file address-generator.ts
+ * @file address.ts
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
  * @date 2020
  */
@@ -23,4 +23,25 @@ export function* addressGenerator(): Generator<string> {
 	while (true) {
 		yield "0x" + crypto.randomBytes(20).toString("hex");
 	}
+}
+
+export function generateAddressesList(size: number): string[] {
+	const generator = addressGenerator();
+
+	const recipients = [];
+	for (let i = 0; i < size; i++) {
+		recipients.push(generator.next().value);
+	}
+
+	return recipients;
+}
+
+export function shuffleAddressToList(
+	address: string,
+	list: string[]
+): string[] {
+	const position = Math.floor(Math.random() * (list.length + 1));
+	list.splice(position, 0, address);
+
+	return list;
 }

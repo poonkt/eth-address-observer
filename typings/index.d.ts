@@ -116,6 +116,7 @@ export class EthTransaction extends EventEmitter {
 		transactionHash: string,
 		confirmationsRequired: number
 	);
+	init(): Promise<void>;
 	process(latestBlockNumber: number): Promise<void>;
 }
 

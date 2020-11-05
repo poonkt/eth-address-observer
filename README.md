@@ -25,7 +25,7 @@ const Web3 = require("web3");
 const EthAddressObserver = require("eth-address-observer");
 import EthAddressObserver from 'eth-address-observer' // or
 
-/** Requires exactly websocket provider,
+/** Requires websocket, ipc provider,
  * also be careful using cloud providers,
  * library drains huge amount of requests */
 const web3 = new Web3("ws://localhost:8546");
@@ -62,7 +62,7 @@ Listening for incoming transactions:
 
 ```js
 /** Subscribing to changes */
-/** Emits ever transaction in pending state, sometimes could be skipped */
+/** Emits ever transaction in pending state */
 observer.subscribe("pending", (transaction) => {
 	console.log(
 		`${transaction.to}: Transaction: ${transaction.hash} in PENDING state`
