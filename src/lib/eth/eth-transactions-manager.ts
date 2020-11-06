@@ -58,6 +58,8 @@ export class EthTransactionsManager extends EventEmitter {
 			this.emit("success", transactionReceipt);
 		});
 
+		ethTransaction.init();
+
 		this.transactions.set(transactionHash, ethTransaction);
 	}
 
