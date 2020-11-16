@@ -68,8 +68,6 @@ async function detectionTest(
 		cb(commits, desiredAddress);
 	});
 
-	let j = 0;
-
 	for (let i = 0; i < listSize; i++) {
 		await new Promise((resolve) => {
 			setTimeout(async () => {
@@ -81,8 +79,6 @@ async function detectionTest(
 				resolve();
 			}, transactionDelay);
 		});
-
-		console.log(j++);
 	}
 }
 
