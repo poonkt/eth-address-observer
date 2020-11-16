@@ -51,6 +51,8 @@ export class EthTransactionsCollector extends EventEmitter {
 
 	private async search(transactions: Transaction[]): Promise<string[]> {
 		const foundTransactionsHash = transactions.map((transaction) => {
+			if (!transaction.to) return;
+
 			if (this.watchList.find(BigInt(transaction.to)) === null) return;
 			else return transaction.hash;
 		});

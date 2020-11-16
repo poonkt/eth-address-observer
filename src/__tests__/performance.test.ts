@@ -68,6 +68,8 @@ async function detectionTest(
 		cb(commits, desiredAddress);
 	});
 
+	let j = 0;
+
 	for (let i = 0; i < listSize; i++) {
 		await new Promise((resolve) => {
 			setTimeout(async () => {
@@ -79,45 +81,15 @@ async function detectionTest(
 				resolve();
 			}, transactionDelay);
 		});
+
+		console.log(j++);
 	}
 }
 
-const listSize = 160;
+const listSize = 32;
 const transactionDelay = 1000;
 
 describe("Transaction detection in list of 1000000 observable addresses to a dedicated address", () => {
-	test("Should detect pending transaction in flood of transactions 1tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
-		detectionTest(transactionDelay, listSize, async (commits, address) => {
-			const balance = web3.utils.fromWei(
-				await web3.eth.getBalance(address),
-				"ether"
-			);
-			expect(balance).toBe("1");
-			expect(commits.pending).toBeTruthy();
-			expect(commits.confirmation).toBeTruthy();
-			expect(commits.success).toBeTruthy();
-			done();
-		});
-	}, 400000);
-
-	test("Should detect pending transaction in flood of transactions 2tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
-		detectionTest(
-			transactionDelay / 2,
-			listSize * 2,
-			async (commits, address) => {
-				const balance = web3.utils.fromWei(
-					await web3.eth.getBalance(address),
-					"ether"
-				);
-				expect(balance).toBe("1");
-				expect(commits.pending).toBeTruthy();
-				expect(commits.confirmation).toBeTruthy();
-				expect(commits.success).toBeTruthy();
-				done();
-			}
-		);
-	}, 400000);
-
 	test("Should detect pending transaction in flood of transactions 4tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
 		detectionTest(
 			transactionDelay / 4,
@@ -134,7 +106,7 @@ describe("Transaction detection in list of 1000000 observable addresses to a ded
 				done();
 			}
 		);
-	}, 400000);
+	}, 500000);
 
 	test("Should detect pending transaction in flood of transactions 8tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
 		detectionTest(
@@ -152,7 +124,7 @@ describe("Transaction detection in list of 1000000 observable addresses to a ded
 				done();
 			}
 		);
-	}, 400000);
+	}, 500000);
 
 	test("Should detect pending transaction in flood of transactions 12tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
 		detectionTest(
@@ -170,7 +142,7 @@ describe("Transaction detection in list of 1000000 observable addresses to a ded
 				done();
 			}
 		);
-	}, 400000);
+	}, 500000);
 
 	test("Should detect pending transaction in flood of transactions 15tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
 		detectionTest(
@@ -188,25 +160,7 @@ describe("Transaction detection in list of 1000000 observable addresses to a ded
 				done();
 			}
 		);
-	}, 400000);
-
-	test("(experimental) Should detect pending transaction in flood of transactions 20tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
-		detectionTest(
-			transactionDelay / 20,
-			listSize * 20,
-			async (commits, address) => {
-				const balance = web3.utils.fromWei(
-					await web3.eth.getBalance(address),
-					"ether"
-				);
-				expect(balance).toBe("1");
-				expect(commits.pending).toBeTruthy();
-				expect(commits.confirmation).toBeTruthy();
-				expect(commits.success).toBeTruthy();
-				done();
-			}
-		);
-	}, 400000);
+	}, 500000);
 
 	test("(experimental) Should detect pending transaction in flood of transactions 30tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
 		detectionTest(
@@ -224,9 +178,9 @@ describe("Transaction detection in list of 1000000 observable addresses to a ded
 				done();
 			}
 		);
-	}, 400000);
+	}, 500000);
 
-	test("(experimental) Should detect pending transaction in flood of transactions ~50tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
+	test("(experimental) Should detect pending transaction in flood of transactions >= 50tx/sec and watch until confirmed. Expecting 1 ETH balance and commits from (pending, confirmation, success) events", async (done) => {
 		detectionTest(
 			transactionDelay / 50,
 			listSize * 50,
@@ -242,5 +196,5 @@ describe("Transaction detection in list of 1000000 observable addresses to a ded
 				done();
 			}
 		);
-	}, 400000);
+	}, 500000);
 });
