@@ -34,10 +34,6 @@ export interface IAddressesObserverConfig {
 	transactionsCacheSize?: number;
 }
 
-export interface ICollector {
-	listen(): void;
-}
-
 export interface ICollectorCache {
 	add(data: number | string, cb: (error: string | null) => void): void;
 }
@@ -99,7 +95,7 @@ export default class EthAddressesObserver
 	toAddress(number: bigint): string;
 }
 
-export class EthBlocksCollector extends EventEmitter implements ICollector {
+export class EthBlocksCollector extends EventEmitter {
 	private readonly web3;
 	private readonly blocksCollectorCache;
 	constructor(web3: Web3, blocksCacheSize: number);
@@ -120,18 +116,14 @@ export class EthTransaction extends EventEmitter {
 	process(latestBlockNumber: number): Promise<void>;
 }
 
-export class EthTransactionsCollector
-	extends EventEmitter
-	implements ICollector {
-	private readonly web3;
+export class EthTransactionsCollector extends EventEmitter {
 	private readonly transactionsCollectorCache;
 	private readonly watchList;
 	constructor(
-		web3: Web3,
 		watchList: RBTree<bigint | number>,
 		transactionsCacheSize: number
 	);
-	listen(): void;
+	add(transactions: Transaction[]): Promise<void>;
 	private search;
 }
 

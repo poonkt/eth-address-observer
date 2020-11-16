@@ -1,13 +1,13 @@
 {
 	"name": "eth-address-observer",
-	"version": "0.2.1",
-	"description": "Ethereum addresses observer is the library of poonkt.io exchange",
+	"version": "0.3.0",
+	"description": "Ethereum addresses observer is a sketch for poonkt.io DEX",
 	"main": "dist/index.js",
 	"typings": "typings/index.d.ts",
 	"scripts": {
 		"dev": "nodemon",
 		"lint": "npx eslint . --ext .ts,.tsx",
-		"test": "jest --forceExit",
+		"test": "jest --ci",
 		"test:watch": "jest --watch"
 	},
 	"keywords": [
@@ -27,9 +27,9 @@
 	"author": "Vitaly Snitovets",
 	"license": "LGPL-3.0-or-later",
 	"dependencies": {
-		"web3": "^1.3.0",
+		"@types/bintrees": "^1.0.2",
 		"tslib": "2.0.3",
-		"@types/bintrees": "^1.0.2"
+		"web3": "^1.3.0"
 	},
 	"devDependencies": {
 		"@types/jest": "^26.0.14",
@@ -39,6 +39,7 @@
 		"eslint": "^7.11.0",
 		"eslint-config-prettier": "^6.12.0",
 		"eslint-plugin-jest": "^24.1.0",
+		"ganache-cli": "^6.12.1",
 		"jest": "^26.5.3",
 		"nodemon": "^2.0.5",
 		"ts-jest": "^26.4.1",
@@ -47,10 +48,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Snitovets/eth-address-observer.git"
+		"url": "git+https://github.com/poonkt/eth-address-observer.git"
 	},
 	"bugs": {
-		"url": "https://github.com/Snitovets/eth-address-observer/issues"
+		"url": "https://github.com/poonkt/eth-address-observer/issues"
 	},
-	"homepage": "https://github.com/Snitovets/eth-address-observer#readme"
+	"homepage": "https://github.com/poonkt/eth-address-observer#readme"
 }

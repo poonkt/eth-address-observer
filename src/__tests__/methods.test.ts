@@ -17,18 +17,10 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
  * @date 2020
  */
-import dotenv from "dotenv";
-dotenv.config();
-
-import Web3 from "web3";
+import web3 from "./utils/web3";
 import EthAddressesObserver from "../lib/eth/eth-addresses-observer";
 import { addressGenerator } from "./utils/address";
 const generator = addressGenerator();
-
-const provider = new Web3.providers.WebsocketProvider(
-	`ws://${process.env.HOST}`
-);
-const web3 = new Web3(provider);
 
 describe("add()", () => {
 	test("Should insert 1000000 addresses to watch-list (string)", async () => {

@@ -32,7 +32,7 @@ export abstract class AddressesObserver extends EventEmitter {
 		super();
 		this.watchList = new RBTree((a: bigint, b: bigint) => a - b);
 		config.blocksCacheSize = config.blocksCacheSize || 64;
-		config.transactionsCacheSize = config.transactionsCacheSize || 32;
+		config.transactionsCacheSize = config.transactionsCacheSize || 64;
 	}
 
 	add(address: string | string[]): void {
