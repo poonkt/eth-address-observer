@@ -25,9 +25,7 @@ const Web3 = require("web3");
 const EthAddressObserver = require("eth-address-observer");
 import EthAddressObserver from 'eth-address-observer' // or
 
-/** Requires websocket, ipc provider,
- * also be careful using cloud providers,
- * library drains huge amount of requests */
+/** Requires websocket or ipc provider */
 const web3 = new Web3("ws://localhost:8546");
 
 /** Optional config */

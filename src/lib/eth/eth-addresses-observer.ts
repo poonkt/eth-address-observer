@@ -25,7 +25,6 @@ import {
 	SubscriptionType
 } from "typings";
 import Web3 from "web3";
-import { TransactionReceipt, Transaction } from "web3-core";
 import { AddressesObserver } from "../addresses-observer";
 import { EthBlocksCollector } from "./eth-blocks-collector";
 import { EthTransactionsCollector } from "./eth-transactions-collector";
@@ -47,7 +46,6 @@ export default class EthAddressesObserver
 			config.blocksCacheSize
 		);
 		this.ethTransactionsCollector = new EthTransactionsCollector(
-			web3,
 			this.watchList,
 			config.transactionsCacheSize
 		);
@@ -56,30 +54,23 @@ export default class EthAddressesObserver
 			config.confirmationsRequired
 		);
 
-		this.ethTransactionsCollector.on("new-transaction", (transactionHash) => {
-			this.ethTransactionsManager.add(transactionHash);
-		});
-		this.ethBlocksCollector.on("new-block", (latestBlockNumber) => {
-			this.ethTransactionsManager.process(latestBlockNumber);
-		});
+		this.ethBlocksCollector.on(
+			"new-block",
+			async (latestBlockNumber: number) => {
+				const { transactions } = await web3.eth.getBlock("latest", true);
+				this.ethTransactionsCollector.add(transactions);
+				this.ethTransactionsManager.process(latestBlockNumber);
+			}
+		);
+
+		this.ethTransactionsCollector.on(
+			"new-transaction",
+			(transactionHash: string) => {
+				this.ethTransactionsManager.add(transactionHash);
+			}
+		);
 	}
 
-	subscribe(type: "pending", handler: (transaction: Transaction) => void): void;
-	subscribe(
-		type: "confirmation",
-		handler: (
-			confirmationNumber: number,
-			transactionReceipt: TransactionReceipt
-		) => void
-	): void;
-	subscribe(
-		type: "dropped",
-		handler: (transactionReceipt: TransactionReceipt) => void
-	): void;
-	subscribe(
-		type: "success",
-		handler: (transactionReceipt: TransactionReceipt) => void
-	): void;
 	subscribe<T>(type: SubscriptionType, handler: (...args: T[]) => void): void {
 		this.ethTransactionsManager.on(type, handler);
 	}

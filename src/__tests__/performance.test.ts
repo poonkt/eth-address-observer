@@ -18,9 +18,6 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2020
  */
 /* eslint-disable jest/no-done-callback */
-import dotenv from "dotenv";
-dotenv.config();
-
 import Web3 from "web3";
 import EthAddressesObserver from "../lib/eth/eth-addresses-observer";
 import {
@@ -30,9 +27,7 @@ import {
 } from "./utils/address";
 const generator = addressGenerator();
 
-const provider = new Web3.providers.WebsocketProvider(
-	`ws://${process.env.HOST}`
-);
+const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);
 
 async function detectionTest(
@@ -91,7 +86,7 @@ async function detectionTest(
 	}
 }
 
-const listSize = 160;
+const listSize = 100;
 const transactionDelay = 1000;
 
 describe("Transaction detection in list of 1000000 observable addresses to a dedicated address", () => {

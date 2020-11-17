@@ -18,55 +18,45 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2020
  */
 
-import { ICollector } from "typings";
-import Web3 from "web3";
+import { Transaction } from "web3-core";
 import { EventEmitter } from "events";
 import { TransactionsCollectorCache } from "../transactions-collector-cache";
 import RBTree from "../../vendor/bintrees/lib/rbtree";
 
-export class EthTransactionsCollector
-	extends EventEmitter
-	implements ICollector {
-	private readonly web3: Web3;
+export class EthTransactionsCollector extends EventEmitter {
 	private readonly transactionsCollectorCache: TransactionsCollectorCache;
 	private readonly watchList: RBTree;
 
-	constructor(web3: Web3, watchList: RBTree, transactionsCacheSize: number) {
+	constructor(watchList: RBTree, transactionsCacheSize: number) {
 		super();
-		this.web3 = web3;
 		this.watchList = watchList;
 		this.transactionsCollectorCache = new TransactionsCollectorCache(
 			transactionsCacheSize
 		);
-
-		this.listen();
 	}
 
-	listen(): void {
-		this.web3.eth
-			.subscribe("pendingTransactions")
-			.on("data", async (transactionHash) => {
-				const foundTransaction = await this.search(transactionHash);
+	async add(transactions: Transaction[]): Promise<void> {
+		const foundTransactions = await this.search(transactions);
 
-				if (!foundTransaction) return;
+		if (!foundTransactions.length) return;
 
-				this.transactionsCollectorCache.add(foundTransaction, (error) => {
-					if (!error) {
-						this.emit("new-transaction", foundTransaction);
-					}
-				});
-			})
-			.on("error", (error) => {
-				console.log(error);
+		foundTransactions.forEach((transaction) => {
+			this.transactionsCollectorCache.add(transaction, (error) => {
+				if (!error) {
+					this.emit("new-transaction", transaction);
+				}
 			});
+		});
 	}
 
-	private async search(transactionHash: string): Promise<string> | undefined {
-		const transaction = await this.web3.eth.getTransaction(transactionHash);
+	private async search(transactions: Transaction[]): Promise<string[]> {
+		const foundTransactionsHash = transactions.map((transaction) => {
+			if (!transaction.to) return;
 
-		if (!transaction?.to) return;
+			if (this.watchList.find(BigInt(transaction.to)) === null) return;
+			else return transaction.hash;
+		});
 
-		if (this.watchList.find(BigInt(transaction.to)) === null) return;
-		return transactionHash;
+		return foundTransactionsHash.filter(Boolean);
 	}
 }
