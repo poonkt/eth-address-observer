@@ -57,7 +57,10 @@ export default class EthAddressesObserver
 		this.ethBlocksCollector.on(
 			"new-block",
 			async (latestBlockNumber: number) => {
-				const { transactions } = await web3.eth.getBlock("latest", true);
+				const { transactions } = await web3.eth.getBlock(
+					latestBlockNumber,
+					true
+				);
 				this.ethTransactionsCollector.add(transactions);
 				this.ethTransactionsManager.process(latestBlockNumber);
 			}
