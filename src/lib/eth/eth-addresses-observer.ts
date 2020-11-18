@@ -57,12 +57,7 @@ export default class EthAddressesObserver
 		this.ethBlocksCollector.on(
 			"new-block",
 			async (latestBlockNumber: number) => {
-				const { transactions } = await web3.eth.getBlock(
-					latestBlockNumber,
-					true
-				);
-				this.ethTransactionsCollector.add(transactions);
-				this.ethTransactionsManager.process(latestBlockNumber);
+				this.process(web3, latestBlockNumber);
 			}
 		);
 
@@ -92,5 +87,16 @@ export default class EthAddressesObserver
 			hex;
 
 		return address;
+	}
+
+	private async process(web3: Web3, blockNumber: number): Promise<void> {
+		try {
+			const { transactions } = await web3.eth.getBlock(blockNumber, true);
+
+			this.ethTransactionsCollector.add(transactions);
+			this.ethTransactionsManager.process(blockNumber);
+		} catch (error) {
+			this.process(web3, blockNumber);
+		}
 	}
 }

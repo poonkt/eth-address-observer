@@ -93,6 +93,7 @@ export default class EthAddressesObserver
 	): void;
 	toBigInt(address: string): bigint;
 	toAddress(number: bigint): string;
+	private process;
 }
 
 export class EthBlocksCollector extends EventEmitter {
