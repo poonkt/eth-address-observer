@@ -1,1 +1,1 @@
-export * from "./lib/eth/eth-addresses-observer.js";
+export * from "./lib/eth/eth-addresses-observer";

@@ -75,13 +75,12 @@ async function detectionTest(
 	for (let i = 0; i < listSize; i++) {
 		await new Promise((resolve) => {
 			setTimeout(async () => {
-				resolve(
-					web3.eth.sendTransaction({
-						from: coinbaseAddress,
-						to: recipients[i],
-						value: web3.utils.toWei("1", "ether")
-					})
-				);
+				web3.eth.sendTransaction({
+					from: coinbaseAddress,
+					to: recipients[i],
+					value: web3.utils.toWei("1", "ether")
+				});
+				resolve(true);
 			}, transactionDelay);
 		});
 	}
