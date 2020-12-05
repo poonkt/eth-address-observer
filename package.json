@@ -1,11 +1,13 @@
 {
 	"name": "eth-address-observer",
-	"version": "0.3.2",
+	"version": "0.4.0",
 	"description": "Ethereum addresses observer is a sketch for poonkt.io DEX",
 	"main": "dist/index.js",
-	"typings": "typings/index.d.ts",
+	"typings": "dist/index.d.ts",
 	"scripts": {
 		"dev": "nodemon",
+		"build": "npm run clean && tsc",
+		"clean": "del-cli ./dist && del-cli ./typings",
 		"lint": "npx eslint . --ext .ts,.tsx",
 		"test": "jest --ci --forceExit",
 		"test:watch": "jest --watch"
@@ -35,6 +37,7 @@
 		"@types/jest": "^26.0.14",
 		"@typescript-eslint/eslint-plugin": "^4.4.1",
 		"@typescript-eslint/parser": "^4.4.1",
+		"del-cli": "^3.0.1",
 		"dotenv": "^8.2.0",
 		"eslint": "^7.11.0",
 		"eslint-config-prettier": "^6.12.0",

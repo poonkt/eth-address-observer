@@ -1,1 +1,1 @@
-module.exports = require("./lib/eth/eth-addresses-observer.js").default;
+export { EthAddressesObserver as EthAddressObserver } from "./lib/eth/eth-addresses-observer";

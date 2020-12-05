@@ -19,13 +19,18 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import { EventEmitter } from "events";
-import { IAddressesObserverConfig } from "typings";
 import RBTree from "../vendor/bintrees/lib/rbtree";
+
+export interface AddressesObserverConfig {
+	confirmationsRequired: number;
+	blocksCacheSize?: number;
+	transactionsCacheSize?: number;
+}
 
 export abstract class AddressesObserver extends EventEmitter {
 	watchList: RBTree;
 
-	constructor(config: IAddressesObserverConfig) {
+	constructor(config: AddressesObserverConfig) {
 		if (config.confirmationsRequired === undefined) {
 			throw new Error("Required config fields are not specified!");
 		}

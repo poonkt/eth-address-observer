@@ -8,10 +8,6 @@ Ethereum addresses observer is part of poonkt.io cryptocurrency exchange.
 The library is used with combination of [web3.js](https://www.npmjs.com/package/web3).
 You need to run a local or remote [Ethereum](https://www.ethereum.org/) node to use this library.
 
-## Disclaimer
-
-Library isn't well tested and possibly could contain bugs, **use it in production on your own risk**. Also feel free to contribute.
-
 ## Installation
 
 ```bash
@@ -22,8 +18,8 @@ npm install eth-address-observer
 
 ```js
 const Web3 = require("web3");
-const EthAddressObserver = require("eth-address-observer");
-import EthAddressObserver from 'eth-address-observer' // or
+const { EthAddressesObserver } = require("eth-address-observer");
+import { EthAddressObserver } from 'eth-address-observer' // or
 
 /** Requires websocket or ipc provider */
 const web3 = new Web3("ws://localhost:8546");
