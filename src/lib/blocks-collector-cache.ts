@@ -18,9 +18,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2020
  */
 
-import { ICollectorCache } from "typings";
-
-export class BlocksCollectorCache implements ICollectorCache {
+export class BlocksCollectorCache {
 	private readonly cache: number[];
 
 	constructor(blocksCacheSize: number) {
