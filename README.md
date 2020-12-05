@@ -18,7 +18,7 @@ npm install eth-address-observer
 
 ```js
 const Web3 = require("web3");
-const { EthAddressesObserver } = require("eth-address-observer");
+const { EthAddressObserver } = require("eth-address-observer");
 import { EthAddressObserver } from 'eth-address-observer' // or
 
 /** Requires websocket or ipc provider */
