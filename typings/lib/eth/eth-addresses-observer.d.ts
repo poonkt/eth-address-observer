@@ -10,7 +10,7 @@ import { EthTransactionsCollector } from "./eth-transactions-collector";
 import { EthTransactionsManager } from "./eth-transactions-manager";
 export declare type EthAddressesObserverConfig = Partial<AddressesObserverConfig>;
 export declare type SubscriptionType = "pending" | "confirmation" | "success" | "dropped";
-export default class EthAddressesObserver extends AddressesObserver {
+export declare class EthAddressesObserver extends AddressesObserver {
     ethBlocksCollector: EthBlocksCollector;
     ethTransactionsCollector: EthTransactionsCollector;
     ethTransactionsManager: EthTransactionsManager;

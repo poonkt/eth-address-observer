@@ -19,7 +19,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  */
 /* eslint-disable jest/no-done-callback */
 import Web3 from "web3";
-import EthAddressesObserver from "../lib/eth/eth-addresses-observer";
+import { EthAddressesObserver } from "../lib/eth/eth-addresses-observer";
 import {
 	addressGenerator,
 	generateAddressesList,

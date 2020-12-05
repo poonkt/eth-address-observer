@@ -18,7 +18,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @date 2020
  */
 import Web3 from "web3";
-import EthAddressesObserver from "../lib/eth/eth-addresses-observer";
+import { EthAddressesObserver } from "../lib/eth/eth-addresses-observer";
 import { addressGenerator } from "./utils/address";
 const generator = addressGenerator();
 

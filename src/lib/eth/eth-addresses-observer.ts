@@ -35,7 +35,7 @@ export type SubscriptionType =
 	| "success"
 	| "dropped";
 
-export default class EthAddressesObserver extends AddressesObserver {
+export class EthAddressesObserver extends AddressesObserver {
 	ethBlocksCollector: EthBlocksCollector;
 	ethTransactionsCollector: EthTransactionsCollector;
 	ethTransactionsManager: EthTransactionsManager;
