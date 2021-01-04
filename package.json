@@ -1,9 +1,9 @@
 {
 	"name": "eth-address-observer",
 	"version": "0.3.5",
-	"description": "Ethereum addresses observer is a sketch for poonkt.io",
+	"description": "Ethereum addresses observer for poonkt.io",
 	"main": "dist/index.js",
-	"typings": "dist/index.d.ts",
+	"typings": "typings/index.d.ts",
 	"scripts": {
 		"dev": "nodemon",
 		"build": "npm run clean && tsc",
