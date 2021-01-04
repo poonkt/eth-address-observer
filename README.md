@@ -63,21 +63,21 @@ observer.subscribe("pending", (transaction) => {
 	);
 });
 /** Emits at every confirmation */
-observer.subscribe("confirmation", (confirmationNumber, transactionReceipt) => {
+observer.subscribe("confirmation", (confirmationNumber, transaction) => {
 	console.log(
-		`${transactionReceipt.to}: Transaction: ${transactionReceipt.transactionHash} new CONFIRMATION: ${confirmationNumber}, in block ${transactionReceipt.blockHash}`
+		`${transaction.to}: Transaction: ${transaction.hash} new CONFIRMATION: ${confirmationNumber}, in block ${transaction.blockHash}`
 	);
 });
 /** Caused by blockchain reorganization */
-observer.subscribe("dropped", (transactionReceipt) => {
+observer.subscribe("dropped", (transaction) => {
 	console.log(
-		`${transactionReceipt.to}: Transaction: ${transactionReceipt.transactionHash} is DROPPED from current block`
+		`${transaction.to}: Transaction: ${transaction.hash} is DROPPED from current block`
 	);
 });
 /** When transaction reach required amount of confirmations */
-observer.subscribe("success", (transactionReceipt) => {
+observer.subscribe("success", (transaction) => {
 	console.log(
-		`${transactionReceipt.to}: Transaction: ${transactionReceipt.transactionHash} is CONFIRMED!`
+		`${transaction.to}: Transaction: ${transaction.hash} is CONFIRMED!`
 	);
 });
 ```
