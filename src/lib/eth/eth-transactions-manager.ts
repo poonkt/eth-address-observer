@@ -44,18 +44,15 @@ export class EthTransactionsManager extends EventEmitter {
 		ethTransaction.on("pending", (transaction) => {
 			this.emit("pending", transaction);
 		});
-		ethTransaction.on(
-			"confirmation",
-			(confirmationNumber, transactionReceipt) => {
-				this.emit("confirmation", confirmationNumber, transactionReceipt);
-			}
-		);
-		ethTransaction.on("dropped", (transactionReceipt) => {
-			this.emit("dropped", transactionReceipt);
+		ethTransaction.on("confirmation", (confirmationNumber, transaction) => {
+			this.emit("confirmation", confirmationNumber, transaction);
 		});
-		ethTransaction.once("success", (transactionReceipt) => {
+		ethTransaction.on("dropped", (transaction) => {
+			this.emit("dropped", transaction);
+		});
+		ethTransaction.once("success", (transaction) => {
 			this.remove(transactionHash);
-			this.emit("success", transactionReceipt);
+			this.emit("success", transaction);
 		});
 
 		ethTransaction.init();

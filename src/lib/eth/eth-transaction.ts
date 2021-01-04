@@ -20,13 +20,14 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 
 import { EventEmitter } from "events";
 import Web3 from "web3";
+import { Transaction } from "web3-core";
 
 export class EthTransaction extends EventEmitter {
 	private readonly web3: Web3;
 	private readonly transactionHash: string;
 	private readonly confirmationsRequired: number;
-
 	private blockHash: string;
+	private transaction?: Transaction;
 
 	constructor(
 		web3: Web3,
@@ -40,11 +41,9 @@ export class EthTransaction extends EventEmitter {
 	}
 
 	async init(): Promise<void> {
-		const transaction = await this.web3.eth.getTransaction(
-			this.transactionHash
-		);
-		this.blockHash = transaction.blockHash;
-		this.emit("pending", transaction);
+		this.transaction = await this.web3.eth.getTransaction(this.transactionHash);
+		this.blockHash = this.transaction.blockHash;
+		this.emit("pending", this.transaction);
 	}
 
 	async process(latestBlockNumber: number): Promise<void> {
@@ -52,21 +51,19 @@ export class EthTransaction extends EventEmitter {
 			this.transactionHash
 		);
 
-		if (!transactionReceipt) {
-			this.init();
+		if (!transactionReceipt) return;
+
+		const confirmationNumber =
+			latestBlockNumber - transactionReceipt.blockNumber;
+
+		if (this.blockHash !== transactionReceipt.blockHash) {
+			this.emit("dropped", this.transaction);
+		} else if (confirmationNumber >= this.confirmationsRequired) {
+			this.emit("success", this.transaction);
 		} else {
-			const confirmationNumber =
-				latestBlockNumber - transactionReceipt.blockNumber;
-
-			if (this.blockHash !== transactionReceipt.blockHash) {
-				this.emit("dropped", transactionReceipt);
-			} else if (confirmationNumber >= this.confirmationsRequired) {
-				this.emit("success", transactionReceipt);
-			} else {
-				this.emit("confirmation", confirmationNumber, transactionReceipt);
-			}
-
-			this.blockHash = transactionReceipt.blockHash;
+			this.emit("confirmation", confirmationNumber, this.transaction);
 		}
+
+		this.blockHash = transactionReceipt.blockHash;
 	}
 }
