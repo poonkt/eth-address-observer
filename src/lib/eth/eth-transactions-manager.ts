@@ -55,9 +55,9 @@ export class EthTransactionsManager extends EventEmitter {
 			this.emit("success", transaction);
 		});
 
-		ethTransaction.init();
-
-		this.transactions.set(transactionHash, ethTransaction);
+		ethTransaction.init().then(() => {
+			this.transactions.set(transactionHash, ethTransaction);
+		});
 	}
 
 	process(latestBlockNumber: number): void {
