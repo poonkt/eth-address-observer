@@ -34,7 +34,7 @@ export class EthTransactionsManager extends EventEmitter {
 		this.transactions = new Map();
 	}
 
-	add(transactionHash: string): void {
+	async add(transactionHash: string): Promise<void> {
 		const ethTransaction = new EthTransaction(
 			this.web3,
 			transactionHash,
