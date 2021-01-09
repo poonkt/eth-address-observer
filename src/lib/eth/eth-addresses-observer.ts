@@ -60,14 +60,14 @@ export class EthAddressesObserver extends AddressesObserver {
 		this.ethBlocksCollector.on(
 			"new-block",
 			async (latestBlockNumber: number) => {
-				this.process(web3, latestBlockNumber);
+				await this.process(web3, latestBlockNumber);
 			}
 		);
 
 		this.ethTransactionsCollector.on(
 			"new-transaction",
-			(transactionHash: string) => {
-				this.ethTransactionsManager.add(transactionHash);
+			async (transactionHash: string) => {
+				await this.ethTransactionsManager.add(transactionHash);
 			}
 		);
 	}

@@ -20,7 +20,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 
 import { EventEmitter } from "events";
 import Web3 from "web3";
-import { Transaction } from "web3-core";
+import { Transaction, TransactionReceipt } from "web3-core";
 
 export class EthTransaction extends EventEmitter {
 	private readonly web3: Web3;
@@ -51,12 +51,13 @@ export class EthTransaction extends EventEmitter {
 			this.transactionHash
 		);
 
-		if (!transactionReceipt) return;
-
 		const confirmationNumber =
 			latestBlockNumber - transactionReceipt.blockNumber;
 
 		if (this.blockHash !== transactionReceipt.blockHash) {
+			this.transaction = await this.web3.eth.getTransaction(
+				transactionReceipt.transactionHash
+			);
 			this.emit("dropped", this.transaction);
 		} else if (confirmationNumber >= this.confirmationsRequired) {
 			this.emit("success", this.transaction);
