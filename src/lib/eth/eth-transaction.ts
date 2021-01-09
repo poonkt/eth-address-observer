@@ -43,6 +43,7 @@ export class EthTransaction extends EventEmitter {
 	async init(): Promise<void> {
 		this.transaction = await this.web3.eth.getTransaction(this.transactionHash);
 		this.blockHash = this.transaction.blockHash;
+
 		this.emit("pending", this.transaction);
 	}
 
