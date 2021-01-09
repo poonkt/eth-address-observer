@@ -47,16 +47,19 @@ export class EthTransaction extends EventEmitter {
 	}
 
 	async process(latestBlockNumber: number): Promise<void> {
+		if (this.transaction) return;
+
 		const transactionReceipt = await this.web3.eth.getTransactionReceipt(
 			this.transactionHash
 		);
-
-		if (!transactionReceipt) return;
 
 		const confirmationNumber =
 			latestBlockNumber - transactionReceipt.blockNumber;
 
 		if (this.blockHash !== transactionReceipt.blockHash) {
+			this.transaction = await this.web3.eth.getTransaction(
+				transactionReceipt.transactionHash
+			);
 			this.emit("dropped", this.transaction);
 		} else if (confirmationNumber >= this.confirmationsRequired) {
 			this.emit("success", this.transaction);
