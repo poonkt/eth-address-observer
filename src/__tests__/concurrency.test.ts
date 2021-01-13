@@ -87,45 +87,37 @@ async function detectionTest(
 	}
 }
 
-const listSize = 100;
-const transactionDelay = 1000;
-
-it("Should detect pending transaction in flood of third party transactions ~50tx/sec and watch until confirmed", async (done) => {
-	detectionTest(
-		transactionDelay / 50,
-		listSize * 50,
-		async (commits, address) => {
-			const balance = web3.utils.fromWei(
-				await web3.eth.getBalance(address),
-				"ether"
-			);
-			expect(balance).toBe("1");
-			expect(commits.pending).toBeTruthy();
-			expect(commits.confirmation).toBeTruthy();
-			expect(commits.success).toBeTruthy();
-			done();
-		}
-	);
+it("Should detect single pending transaction in flood of third party transactions", async (done) => {
+	detectionTest(0, 5000, async (commits, address) => {
+		const balance = web3.utils.fromWei(
+			await web3.eth.getBalance(address),
+			"ether"
+		);
+		expect(balance).toBe("1");
+		expect(commits.pending).toBeTruthy();
+		expect(commits.confirmation).toBeTruthy();
+		expect(commits.success).toBeTruthy();
+		done();
+	});
 }, 500000);
 
 it("Should detect pending transaction while new transactions incoming", async (done) => {
 	const coinbaseAddress = await web3.eth.getCoinbase();
 
-	const addresses = generateAddressesList(25000);
+	const addresses = generateAddressesList(1000);
 
 	const observer = new EthAddressesObserver(web3, { confirmationsRequired: 5 });
 	observer.add(addresses);
 
 	const pendingCb = jest.fn();
-
 	observer.subscribe("pending", pendingCb);
 
 	setTimeout(() => {
-		expect(pendingCb.mock.calls.length).toBe(25000);
+		expect(pendingCb.mock.calls.length).toBe(5000);
 		done();
-	}, 400000);
+	}, 90000);
 
-	for (let i = 0; i < addresses.length; i++) {
+	for (let i = 0; i < addresses.length * 5; i++) {
 		const random = Math.floor(Math.random() * addresses.length);
 
 		web3.eth.sendTransaction({
@@ -134,4 +126,4 @@ it("Should detect pending transaction while new transactions incoming", async (d
 			value: web3.utils.toWei("1", "ether")
 		});
 	}
-}, 500000);
+}, 100000);
