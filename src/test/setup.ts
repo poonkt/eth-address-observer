@@ -11,9 +11,5 @@ declare global {
 	}
 }
 
-global.web3;
-
-beforeAll(() => {
-	const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
-	global.web3 = new Web3(provider);
-});
+const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
+global.web3 = new Web3(provider);

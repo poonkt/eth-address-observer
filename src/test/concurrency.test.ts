@@ -40,7 +40,7 @@ describe("Concurrency testing", () => {
 		setTimeout(() => {
 			expect(pendingCb.mock.calls.length).toBe(1000 * 5);
 			done();
-		}, 150000);
+		}, 300000);
 
 		for (let i = 0; i < addresses.length * 5; i++) {
 			const random = Math.floor(Math.random() * addresses.length);
