@@ -100,7 +100,7 @@ describe("Concurrency testing", () => {
 			expect(commits.success).toBeTruthy();
 			done();
 		});
-	}, 500000);
+	}, 700000);
 
 	it("Should detect pending transaction while new transactions incoming", async (done) => {
 		const coinbaseAddress = await web3.eth.getCoinbase();
