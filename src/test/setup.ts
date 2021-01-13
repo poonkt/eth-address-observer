@@ -11,15 +11,9 @@ declare global {
 	}
 }
 
-global.web3 = null;
-
-const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
+global.web3;
 
 beforeAll(() => {
-	provider.reconnect();
+	const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 	global.web3 = new Web3(provider);
-});
-
-afterAll(() => {
-	provider.disconnect(1000, "Successful operation");
 });

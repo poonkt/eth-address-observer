@@ -9,7 +9,7 @@
 		"build": "npm run clean && tsc",
 		"clean": "del-cli ./dist && del-cli ./typings",
 		"lint": "npx eslint . --ext .ts,.tsx",
-		"test:ci": "jest --ci --runInBand",
+		"test:ci": "jest --ci --runInBand --forceExit",
 		"test:watch": "jest --watch"
 	},
 	"keywords": [
