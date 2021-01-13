@@ -117,18 +117,11 @@ it("Should detect pending transaction while new transactions incoming", async (d
 	observer.add(addresses);
 
 	const pendingCb = jest.fn();
-	const confirmationCb = jest.fn();
-	const successCb = jest.fn();
 
 	observer.subscribe("pending", pendingCb);
-	observer.subscribe("confirmation", confirmationCb);
-	observer.subscribe("success", successCb);
 
 	setTimeout(() => {
 		expect(pendingCb.mock.calls.length).toBe(25000);
-		expect(confirmationCb.mock.calls.length).toBe(25000 * 4);
-		expect(successCb.mock.calls.length).toBe(25000);
-
 		done();
 	}, 400000);
 
