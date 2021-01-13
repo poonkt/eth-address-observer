@@ -115,7 +115,7 @@ it("Should detect pending transaction while new transactions incoming", async (d
 	setTimeout(() => {
 		expect(pendingCb.mock.calls.length).toBe(5000);
 		done();
-	}, 90000);
+	}, 200000);
 
 	for (let i = 0; i < addresses.length * 5; i++) {
 		const random = Math.floor(Math.random() * addresses.length);
@@ -126,4 +126,4 @@ it("Should detect pending transaction while new transactions incoming", async (d
 			value: web3.utils.toWei("1", "ether")
 		});
 	}
-}, 100000);
+}, 220000);
