@@ -87,43 +87,47 @@ async function detectionTest(
 	}
 }
 
-it("Should detect single pending transaction in flood of third party transactions", async (done) => {
-	detectionTest(0, 5000, async (commits, address) => {
-		const balance = web3.utils.fromWei(
-			await web3.eth.getBalance(address),
-			"ether"
-		);
-		expect(balance).toBe("1");
-		expect(commits.pending).toBeTruthy();
-		expect(commits.confirmation).toBeTruthy();
-		expect(commits.success).toBeTruthy();
-		done();
-	});
-}, 500000);
-
-it("Should detect pending transaction while new transactions incoming", async (done) => {
-	const coinbaseAddress = await web3.eth.getCoinbase();
-
-	const addresses = generateAddressesList(1000);
-
-	const observer = new EthAddressesObserver(web3, { confirmationsRequired: 5 });
-	observer.add(addresses);
-
-	const pendingCb = jest.fn();
-	observer.subscribe("pending", pendingCb);
-
-	setTimeout(() => {
-		expect(pendingCb.mock.calls.length).toBe(5000);
-		done();
-	}, 200000);
-
-	for (let i = 0; i < addresses.length * 5; i++) {
-		const random = Math.floor(Math.random() * addresses.length);
-
-		web3.eth.sendTransaction({
-			from: coinbaseAddress,
-			to: addresses[random],
-			value: web3.utils.toWei("1", "ether")
+describe("Concurrency testing", () => {
+	it("Should detect single pending transaction in flood of third party transactions", async (done) => {
+		detectionTest(0, 5000, async (commits, address) => {
+			const balance = web3.utils.fromWei(
+				await web3.eth.getBalance(address),
+				"ether"
+			);
+			expect(balance).toBe("1");
+			expect(commits.pending).toBeTruthy();
+			expect(commits.confirmation).toBeTruthy();
+			expect(commits.success).toBeTruthy();
+			done();
 		});
-	}
-}, 220000);
+	}, 500000);
+
+	it("Should detect pending transaction while new transactions incoming", async (done) => {
+		const coinbaseAddress = await web3.eth.getCoinbase();
+
+		const addresses = generateAddressesList(1000);
+
+		const observer = new EthAddressesObserver(web3, {
+			confirmationsRequired: 5
+		});
+		observer.add(addresses);
+
+		const pendingCb = jest.fn();
+		observer.subscribe("pending", pendingCb);
+
+		setTimeout(() => {
+			expect(pendingCb.mock.calls.length).toBe(5000);
+			done();
+		}, 160000);
+
+		for (let i = 0; i < addresses.length * 5; i++) {
+			const random = Math.floor(Math.random() * addresses.length);
+
+			web3.eth.sendTransaction({
+				from: coinbaseAddress,
+				to: addresses[random],
+				value: web3.utils.toWei("1", "ether")
+			});
+		}
+	}, 180000);
+});
