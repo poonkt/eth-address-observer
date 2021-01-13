@@ -8,4 +8,4 @@ FROM base as lint
 CMD ["npm", "run", "lint"]
 
 FROM lint as test
-CMD [ "npm", "t" ]
+CMD [ "npm", "run", "test:ci" ]

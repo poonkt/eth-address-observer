@@ -9,7 +9,7 @@
 		"build": "npm run clean && tsc",
 		"clean": "del-cli ./dist && del-cli ./typings",
 		"lint": "npx eslint . --ext .ts,.tsx",
-		"test": "jest --ci --forceExit",
+		"test:ci": "jest --ci",
 		"test:watch": "jest --watch"
 	},
 	"keywords": [
@@ -47,6 +47,16 @@
 		"ts-jest": "^26.4.1",
 		"ts-node": "^9.0.0",
 		"typescript": "^4.0.3"
+	},
+	"jest": {
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"setupFilesAfterEnv": [
+			"<rootDir>/src/test/setup.ts"
+		],
+		"modulePathIgnorePatterns": [
+			"<rootDir>/src/test/utils"
+		]
 	},
 	"repository": {
 		"type": "git",
