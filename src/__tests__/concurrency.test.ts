@@ -1,4 +1,3 @@
-/* eslint-disable jest/expect-expect */
 /* eslint-disable jest/no-done-callback */
 /*
 eth-address-observer is free software: you can redistribute it and/or modify
@@ -107,24 +106,31 @@ it("Should detect pending transaction in flood of third party transactions ~50tx
 			done();
 		}
 	);
-}, 400000);
+}, 500000);
 
 it("Should detect pending transaction while new transactions incoming", async (done) => {
 	const coinbaseAddress = await web3.eth.getCoinbase();
 
 	const addresses = generateAddressesList(25000);
 
-	const observer = new EthAddressesObserver(web3);
+	const observer = new EthAddressesObserver(web3, { confirmationsRequired: 5 });
 	observer.add(addresses);
 
-	let pending = 0;
-	observer.subscribe("pending", () => {
-		pending++;
+	const pendingCb = jest.fn();
+	const confirmationCb = jest.fn();
+	const successCb = jest.fn();
 
-		if (pending === 25000) {
-			done();
-		}
-	});
+	observer.subscribe("pending", pendingCb);
+	observer.subscribe("confirmation", confirmationCb);
+	observer.subscribe("success", successCb);
+
+	setTimeout(() => {
+		expect(pendingCb.mock.calls.length).toBe(25000);
+		expect(confirmationCb.mock.calls.length).toBe(25000 * 4);
+		expect(successCb.mock.calls.length).toBe(25000);
+
+		done();
+	}, 400000);
 
 	for (let i = 0; i < addresses.length; i++) {
 		const random = Math.floor(Math.random() * addresses.length);
@@ -135,4 +141,4 @@ it("Should detect pending transaction while new transactions incoming", async (d
 			value: web3.utils.toWei("1", "ether")
 		});
 	}
-}, 400000);
+}, 500000);
