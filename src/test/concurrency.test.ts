@@ -18,6 +18,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
  * @date 2021
  */
+import Web3 from "web3";
 import { EthAddressesObserver } from "../lib/eth/eth-addresses-observer";
 import {
 	addressGenerator,
@@ -25,13 +26,16 @@ import {
 	shuffleAddressToList
 } from "./utils/address";
 
+const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
+const web3 = new Web3(provider);
+
 describe("Concurrency testing", () => {
 	it("Should detect pending transaction while new transactions incoming", async (done) => {
-		const coinbaseAddress = await global.web3.eth.getCoinbase();
+		const coinbaseAddress = await web3.eth.getCoinbase();
 
 		const addresses = generateAddressesList(1000);
 
-		const observer = new EthAddressesObserver(global.web3);
+		const observer = new EthAddressesObserver(web3);
 		observer.add(addresses);
 
 		const pendingCb = jest.fn();
@@ -45,22 +49,22 @@ describe("Concurrency testing", () => {
 		for (let i = 0; i < addresses.length * 5; i++) {
 			const random = Math.floor(Math.random() * addresses.length);
 
-			global.web3.eth.sendTransaction({
+			web3.eth.sendTransaction({
 				from: coinbaseAddress,
 				to: addresses[random],
-				value: global.web3.utils.toWei("1", "ether")
+				value: web3.utils.toWei("1", "ether")
 			});
 		}
 	});
 
 	it("Should detect single pending transaction in the flood of third party transactions", async (done) => {
-		const coinbaseAddress = await global.web3.eth.getCoinbase();
+		const coinbaseAddress = await web3.eth.getCoinbase();
 
 		const generator = addressGenerator();
 		const desiredAddress = generator.next().value;
 		const addresses = generateAddressesList(1000000);
 
-		const observer = new EthAddressesObserver(global.web3);
+		const observer = new EthAddressesObserver(web3);
 		observer.add(desiredAddress);
 		observer.add(addresses);
 
@@ -83,8 +87,8 @@ describe("Concurrency testing", () => {
 		observer.subscribe("success", async () => {
 			commits.success = true;
 
-			const balance = global.web3.utils.fromWei(
-				await global.web3.eth.getBalance(desiredAddress),
+			const balance = web3.utils.fromWei(
+				await web3.eth.getBalance(desiredAddress),
 				"ether"
 			);
 			expect(balance).toBe("1");
@@ -95,10 +99,10 @@ describe("Concurrency testing", () => {
 		});
 
 		for (let i = 0; i < 5000; i++) {
-			global.web3.eth.sendTransaction({
+			web3.eth.sendTransaction({
 				from: coinbaseAddress,
 				to: recipients[i],
-				value: global.web3.utils.toWei("1", "ether")
+				value: web3.utils.toWei("1", "ether")
 			});
 		}
 	});

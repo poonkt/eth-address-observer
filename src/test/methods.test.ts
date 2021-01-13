@@ -17,14 +17,18 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
  * @date 2020
  */
+import Web3 from "web3";
 import { EthAddressesObserver } from "../lib/eth/eth-addresses-observer";
 import { addressGenerator } from "./utils/address";
+
+const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
+const web3 = new Web3(provider);
 
 const generator = addressGenerator();
 
 describe("add()", () => {
 	it("Should insert 1000000 addresses to watch-list (string)", () => {
-		const observer = new EthAddressesObserver(global.web3);
+		const observer = new EthAddressesObserver(web3);
 
 		const length = 1000000;
 		for (let i = 0; i < length; i++) {
@@ -35,7 +39,7 @@ describe("add()", () => {
 	});
 
 	it("Should insert 1000000 addresses to watch-list (array)", () => {
-		const observer = new EthAddressesObserver(global.web3);
+		const observer = new EthAddressesObserver(web3);
 
 		const length = 1000000;
 		const arr = [];
@@ -50,7 +54,7 @@ describe("add()", () => {
 
 describe("remove()", () => {
 	it("Should remove 950000 addresses from watch-list of 1000000 addresses (string)", () => {
-		const observer = new EthAddressesObserver(global.web3);
+		const observer = new EthAddressesObserver(web3);
 
 		const length = 1000000;
 		const addresses = [];
@@ -71,7 +75,7 @@ describe("remove()", () => {
 	});
 
 	it("Should remove 950000 addresses from watch-list of 1000000 addresses (array)", () => {
-		const observer = new EthAddressesObserver(global.web3);
+		const observer = new EthAddressesObserver(web3);
 
 		const length = 1000000;
 		const addresses = [];
@@ -90,7 +94,7 @@ describe("remove()", () => {
 
 describe("random tests", () => {
 	it("Should randomly add(), remove()", () => {
-		const observer = new EthAddressesObserver(global.web3);
+		const observer = new EthAddressesObserver(web3);
 		const command = ["add", "remove"];
 		const commandsList = [];
 
