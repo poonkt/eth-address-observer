@@ -29,11 +29,7 @@ import { EthTransactionsManager } from "./eth-transactions-manager";
 
 export type EthAddressesObserverConfig = Partial<AddressesObserverConfig>;
 
-export type SubscriptionType =
-	| "pending"
-	| "confirmation"
-	| "success"
-	| "dropped";
+export type SubscriptionType = "pending" | "confirmation" | "success";
 
 export class EthAddressesObserver extends AddressesObserver {
 	ethBlocksCollector: EthBlocksCollector;
@@ -49,8 +45,7 @@ export class EthAddressesObserver extends AddressesObserver {
 			config.blocksCacheSize
 		);
 		this.ethTransactionsCollector = new EthTransactionsCollector(
-			this.watchList,
-			config.transactionsCacheSize
+			this.watchList
 		);
 		this.ethTransactionsManager = new EthTransactionsManager(
 			web3,

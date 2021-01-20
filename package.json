@@ -1,6 +1,6 @@
 {
 	"name": "eth-address-observer",
-	"version": "0.3.7",
+	"version": "0.4.0",
 	"description": "Ethereum addresses observer for poonkt.io",
 	"main": "dist/index.js",
 	"typings": "typings/index.d.ts",

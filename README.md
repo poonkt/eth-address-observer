@@ -57,25 +57,25 @@ Listening for incoming transactions:
 ```js
 /** Subscribing to changes */
 /** Emits ever transaction in pending state */
-observer.subscribe("pending", (transaction) => {
+observer.subscribe("pending", (transactionHash) => {
+	const transaction = await web3.eth.getTransaction(transactionHash);
+
 	console.log(
 		`${transaction.to}: Transaction: ${transaction.hash} in PENDING state`
 	);
 });
 /** Emits at every confirmation */
-observer.subscribe("confirmation", (confirmationNumber, transaction) => {
+observer.subscribe("confirmation", (confirmationNumber, transactionHash) => {
+	const transaction = await web3.eth.getTransaction(transactionHash);
+
 	console.log(
 		`${transaction.to}: Transaction: ${transaction.hash} new CONFIRMATION: ${confirmationNumber}, in block ${transaction.blockHash}`
 	);
 });
-/** Caused by blockchain reorganization */
-observer.subscribe("dropped", (transaction) => {
-	console.log(
-		`${transaction.to}: Transaction: ${transaction.hash} is DROPPED from current block`
-	);
-});
 /** When transaction reach required amount of confirmations */
-observer.subscribe("success", (transaction) => {
+observer.subscribe("success", async (transactionHash) => {
+	const transaction = await web3.eth.getTransaction(transactionHash);
+
 	console.log(
 		`${transaction.to}: Transaction: ${transaction.hash} is CONFIRMED!`
 	);

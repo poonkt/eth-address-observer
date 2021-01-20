@@ -47,9 +47,6 @@ export class EthTransactionsManager extends EventEmitter {
 		ethTransaction.on("confirmation", (confirmationNumber, transaction) => {
 			this.emit("confirmation", confirmationNumber, transaction);
 		});
-		ethTransaction.on("dropped", (transaction) => {
-			this.emit("dropped", transaction);
-		});
 		ethTransaction.once("success", (transaction) => {
 			this.remove(transactionHash);
 			this.emit("success", transaction);

@@ -20,14 +20,16 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 
 import { EventEmitter } from "events";
 import Web3 from "web3";
-import { Transaction } from "web3-core";
+import { Transaction, TransactionReceipt } from "web3-core";
 
 export class EthTransaction extends EventEmitter {
 	private readonly web3: Web3;
-	private readonly transactionHash: string;
 	private readonly confirmationsRequired: number;
+	private readonly transactionHash: string;
+
 	private blockHash: string;
 	private transaction?: Transaction;
+	private transactionReceipt?: TransactionReceipt;
 
 	constructor(
 		web3: Web3,
@@ -36,37 +38,46 @@ export class EthTransaction extends EventEmitter {
 	) {
 		super();
 		this.web3 = web3;
-		this.transactionHash = transactionHash;
 		this.confirmationsRequired = confirmationsRequired;
+		this.transactionHash = transactionHash;
 	}
 
 	async init(): Promise<void> {
 		this.transaction = await this.web3.eth.getTransaction(this.transactionHash);
+		this.transactionReceipt = await this.web3.eth.getTransactionReceipt(
+			this.transactionHash
+		);
 		this.blockHash = this.transaction.blockHash;
 
-		this.emit("pending", this.transaction);
+		this.emit("pending", this.transactionHash);
 	}
 
 	async process(latestBlockNumber: number): Promise<void> {
-		const transactionReceipt = await this.web3.eth.getTransactionReceipt(
-			this.transactionHash
-		);
-		if (!transactionReceipt) return;
-
-		const confirmationNumber =
-			latestBlockNumber - transactionReceipt.blockNumber;
-
-		if (this.blockHash !== transactionReceipt.blockHash) {
-			this.transaction = await this.web3.eth.getTransaction(
-				transactionReceipt.transactionHash
+		if (!this.transactionReceipt) {
+			this.transactionReceipt = await this.web3.eth.getTransactionReceipt(
+				this.transactionHash
 			);
-			this.emit("dropped", this.transaction);
-		} else if (confirmationNumber >= this.confirmationsRequired) {
-			this.emit("success", this.transaction);
-		} else {
-			this.emit("confirmation", confirmationNumber, this.transaction);
+
+			if (!this.transactionReceipt) return;
 		}
 
-		this.blockHash = transactionReceipt.blockHash;
+		const confirmationNumber =
+			latestBlockNumber - this.transactionReceipt.blockNumber;
+
+		if (confirmationNumber >= this.confirmationsRequired) {
+			this.transactionReceipt = await this.web3.eth.getTransactionReceipt(
+				this.transactionHash
+			);
+
+			if (!this.transactionReceipt) return;
+
+			if (this.transactionReceipt.blockHash !== this.blockHash) {
+				this.blockHash = this.transactionReceipt.blockHash;
+			} else {
+				this.emit("success", this.transactionHash);
+			}
+		} else {
+			this.emit("confirmation", confirmationNumber, this.transactionHash);
+		}
 	}
 }
