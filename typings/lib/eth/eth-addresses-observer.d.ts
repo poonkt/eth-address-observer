@@ -4,16 +4,14 @@
  * @date 2020
  */
 import Web3 from "web3";
-import {
-	AddressesObserver,
-	AddressesObserverConfig
-} from "../addresses-observer";
+import { AddressesObserver, AddressesObserverConfig } from "../addresses-observer";
 import { EthBlocksCollector } from "./eth-blocks-collector";
 import { EthTransactionsCollector } from "./eth-transactions-collector";
 import { EthTransactionsManager } from "./eth-transactions-manager";
 export declare type EthAddressesObserverConfig = Partial<AddressesObserverConfig>;
 export declare type SubscriptionType = "pending" | "confirmation" | "success";
 export declare class EthAddressesObserver extends AddressesObserver {
+	private readonly web3;
 	ethBlocksCollector: EthBlocksCollector;
 	ethTransactionsCollector: EthTransactionsCollector;
 	ethTransactionsManager: EthTransactionsManager;
@@ -22,4 +20,5 @@ export declare class EthAddressesObserver extends AddressesObserver {
 	toBigInt(address: string): bigint;
 	toAddress(number: bigint): string;
 	private process;
+	private addTransaction;
 }

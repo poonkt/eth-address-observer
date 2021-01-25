@@ -27,15 +27,11 @@ export class EthTransaction extends EventEmitter {
 	private readonly confirmationsRequired: number;
 	private readonly transactionHash: string;
 
-	private blockHash: string;
 	private transaction?: Transaction;
 	private transactionReceipt?: TransactionReceipt;
+	private blockHash: string;
 
-	constructor(
-		web3: Web3,
-		transactionHash: string,
-		confirmationsRequired: number
-	) {
+	constructor(web3: Web3, transactionHash: string, confirmationsRequired: number) {
 		super();
 		this.web3 = web3;
 		this.confirmationsRequired = confirmationsRequired;
@@ -44,9 +40,7 @@ export class EthTransaction extends EventEmitter {
 
 	async init(): Promise<void> {
 		this.transaction = await this.web3.eth.getTransaction(this.transactionHash);
-		this.transactionReceipt = await this.web3.eth.getTransactionReceipt(
-			this.transactionHash
-		);
+		this.transactionReceipt = await this.web3.eth.getTransactionReceipt(this.transactionHash);
 		this.blockHash = this.transaction.blockHash;
 
 		this.emit("pending", this.transactionHash);
@@ -54,20 +48,15 @@ export class EthTransaction extends EventEmitter {
 
 	async process(latestBlockNumber: number): Promise<void> {
 		if (!this.transactionReceipt) {
-			this.transactionReceipt = await this.web3.eth.getTransactionReceipt(
-				this.transactionHash
-			);
+			this.transactionReceipt = await this.web3.eth.getTransactionReceipt(this.transactionHash);
 
 			if (!this.transactionReceipt) return;
 		}
 
-		const confirmationNumber =
-			latestBlockNumber - this.transactionReceipt.blockNumber;
+		const confirmationNumber = latestBlockNumber - this.transactionReceipt.blockNumber;
 
 		if (confirmationNumber >= this.confirmationsRequired) {
-			this.transactionReceipt = await this.web3.eth.getTransactionReceipt(
-				this.transactionHash
-			);
+			this.transactionReceipt = await this.web3.eth.getTransactionReceipt(this.transactionHash);
 
 			if (!this.transactionReceipt) return;
 

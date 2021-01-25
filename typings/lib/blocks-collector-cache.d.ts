@@ -4,8 +4,8 @@
  * @date 2020
  */
 export declare class BlocksCollectorCache {
-    private readonly cache;
-    constructor(blocksCacheSize: number);
-    add(blockNumber: number, cb: (error: string | null) => void): void;
-    private setup;
+	private readonly cache;
+	constructor(blocksCacheSize: number);
+	add(blockNumber: number, cb: (error: string | null) => void): void;
+	private setup;
 }

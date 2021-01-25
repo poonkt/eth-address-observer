@@ -41,15 +41,13 @@ export abstract class AddressesObserver extends EventEmitter {
 	add(address: string | string[]): void {
 		if (Array.isArray(address)) {
 			address.forEach((item) => this.watchList.insert(this.toBigInt(item)));
-		} else if (typeof address === "string")
-			this.watchList.insert(this.toBigInt(address));
+		} else if (typeof address === "string") this.watchList.insert(this.toBigInt(address));
 	}
 
 	remove(address: string | string[]): void {
 		if (Array.isArray(address)) {
 			address.forEach((item) => this.watchList.remove(this.toBigInt(item)));
-		} else if (typeof address === "string")
-			this.watchList.remove(this.toBigInt(address));
+		} else if (typeof address === "string") this.watchList.remove(this.toBigInt(address));
 	}
 
 	get list(): string[] {
