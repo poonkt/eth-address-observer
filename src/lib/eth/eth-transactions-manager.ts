@@ -35,11 +35,7 @@ export class EthTransactionsManager extends EventEmitter {
 	}
 
 	async add(transactionHash: string): Promise<void> {
-		const ethTransaction = new EthTransaction(
-			this.web3,
-			transactionHash,
-			this.confirmationsRequired
-		);
+		const ethTransaction = new EthTransaction(this.web3, transactionHash, this.confirmationsRequired);
 
 		ethTransaction.on("pending", (transaction) => {
 			this.emit("pending", transaction);
@@ -58,9 +54,7 @@ export class EthTransactionsManager extends EventEmitter {
 	}
 
 	process(latestBlockNumber: number): void {
-		this.transactions.forEach((ethTransaction) =>
-			ethTransaction.process(latestBlockNumber)
-		);
+		this.transactions.forEach((ethTransaction) => ethTransaction.process(latestBlockNumber));
 	}
 
 	private remove(transactionHash: string): void {
