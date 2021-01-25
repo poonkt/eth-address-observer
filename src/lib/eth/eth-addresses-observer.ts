@@ -45,9 +45,12 @@ export class EthAddressesObserver extends AddressesObserver {
 		this.ethTransactionsCollector = new EthTransactionsCollector(this.watchList);
 		this.ethTransactionsManager = new EthTransactionsManager(web3, config.confirmationsRequired);
 
-		this.ethBlocksCollector.on("new-block", this.process);
-
-		this.ethTransactionsCollector.on("new-transaction", this.addTransaction);
+		this.ethBlocksCollector.on("new-block", (latestBlockNumber: number) => {
+			this.process(latestBlockNumber);
+		});
+		this.ethTransactionsCollector.on("new-transaction", (transactionHash: string) => {
+			this.addTransaction(transactionHash);
+		});
 	}
 
 	subscribe<T>(type: SubscriptionType, handler: (...args: T[]) => void): void {
