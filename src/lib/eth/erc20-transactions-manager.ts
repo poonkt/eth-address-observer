@@ -13,35 +13,20 @@ You should have received a copy of the GNU General Public License
 along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 */
 /**
- * @file blocks-collector-cache.ts
+ * @file erc20-transactions-manager.ts
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
- * @date 2020
+ * @date 2021
  */
 
-export class BlocksCollectorCache {
-	private readonly cache: number[];
+import { EventEmitter } from "events";
+import { Erc20Transfer } from "./erc20-transactions-collector";
 
-	constructor(blocksCacheSize: number) {
-		this.cache = [];
-		this.setup(blocksCacheSize);
+export class Erc20TransactionsManager extends EventEmitter {
+	constructor() {
+		super();
 	}
 
-	add(blockNumber: number, cb: (error: string | null) => void): void {
-		if (!this.cache.includes(blockNumber)) {
-			this.cache.push(blockNumber);
-			return cb(null);
-		}
-
-		return cb("Detected block duplicate, processing discarded");
-	}
-
-	private setup(cacheSize: number): void {
-		this.cache.push = function (blockNumber: number) {
-			if (this.length >= cacheSize) {
-				this.shift();
-			}
-
-			return Array.prototype.push.call(this, blockNumber);
-		};
+	add(transfer: Erc20Transfer): void {
+		this.emit("token-transfer", transfer);
 	}
 }
