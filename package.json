@@ -9,8 +9,7 @@
 		"build": "npm run clean && tsc",
 		"clean": "del-cli ./dist && del-cli ./typings",
 		"lint": "npx eslint . --ext .ts,.tsx",
-		"test": "jest --ci --forceExit",
-		"test:watch": "jest --watch"
+		"test": "jest --ci --forceExit"
 	},
 	"keywords": [
 		"eth",

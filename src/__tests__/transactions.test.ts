@@ -1,0 +1,118 @@
+/* 
+eth-address-observer is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+eth-address-observer is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
+*/
+/**
+ * @file transactions.test.ts
+ * @author Vitaly Snitovets <v.snitovets@gmail.com>
+ * @date 2020
+ */
+/* eslint-disable jest/no-done-callback */
+import Web3 from "web3";
+import { EthAddressesObserver } from "../lib/eth/eth-addresses-observer";
+import { addressGenerator, generateAddressesList, shuffleAddressToList } from "./utils/address";
+const generator = addressGenerator();
+
+jest.setTimeout(400000);
+
+const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
+const web3 = new Web3(provider);
+
+async function detectionTest(
+	transactionDelay: number,
+	listSize: number,
+	cb: (
+		commits: {
+			pending: boolean;
+			confirmation: boolean;
+			success: boolean;
+		},
+		address: string
+	) => void
+) {
+	const coinbaseAddress = await web3.eth.getCoinbase();
+
+	const desiredAddress = generator.next().value;
+	const addresses = generateAddressesList(1000000);
+
+	const observer = new EthAddressesObserver(web3);
+	observer.add(desiredAddress);
+	observer.add(addresses);
+
+	const recipients = shuffleAddressToList(desiredAddress, generateAddressesList(listSize - 1));
+
+	const commits = {
+		pending: false,
+		confirmation: false,
+		success: false
+	};
+	observer.subscribe("pending", () => {
+		commits.pending = true;
+	});
+	observer.subscribe("confirmation", () => {
+		commits.confirmation = true;
+	});
+	observer.subscribe("success", () => {
+		commits.success = true;
+		cb(commits, desiredAddress);
+	});
+
+	for (let i = 0; i < listSize; i++) {
+		await new Promise((resolve) => {
+			setTimeout(async () => {
+				web3.eth.sendTransaction({
+					from: coinbaseAddress,
+					to: recipients[i],
+					value: web3.utils.toWei("1", "ether")
+				});
+				resolve(true);
+			}, transactionDelay);
+		});
+	}
+}
+
+const listSize = 100;
+const transactionDelay = 1000;
+
+test("Should detect pending transaction in flood of transactions 15tx/sec and watch until confirmed", async (done) => {
+	detectionTest(transactionDelay / 15, listSize * 15, async (commits, address) => {
+		const balance = web3.utils.fromWei(await web3.eth.getBalance(address), "ether");
+		expect(balance).toBe("1");
+		expect(commits.pending).toBeTruthy();
+		expect(commits.confirmation).toBeTruthy();
+		expect(commits.success).toBeTruthy();
+		done();
+	});
+});
+
+test("Should detect pending transaction in flood of transactions 30tx/sec and watch until confirmed", async (done) => {
+	detectionTest(transactionDelay / 30, listSize * 30, async (commits, address) => {
+		const balance = web3.utils.fromWei(await web3.eth.getBalance(address), "ether");
+		expect(balance).toBe("1");
+		expect(commits.pending).toBeTruthy();
+		expect(commits.confirmation).toBeTruthy();
+		expect(commits.success).toBeTruthy();
+		done();
+	});
+});
+
+test("Should detect pending transaction in flood of transactions ~50tx/sec and watch until confirmed", async (done) => {
+	detectionTest(transactionDelay / 50, listSize * 50, async (commits, address) => {
+		const balance = web3.utils.fromWei(await web3.eth.getBalance(address), "ether");
+		expect(balance).toBe("1");
+		expect(commits.pending).toBeTruthy();
+		expect(commits.confirmation).toBeTruthy();
+		expect(commits.success).toBeTruthy();
+		done();
+	});
+});
