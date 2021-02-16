@@ -9,10 +9,11 @@
 		"allowJs": true,
 		"esModuleInterop": true,
 		"importHelpers": true,
+		"resolveJsonModule": true,
 		"baseUrl": ".",
 		"paths": {
 			"typings": ["typings"]
 		}
 	},
-	"exclude": ["dist", "src/__tests__", "jest.config.js", "sample.ts"]
+	"exclude": ["dist", "src/lib/__tests__", "jest.config.js", "sample.ts"]
 }

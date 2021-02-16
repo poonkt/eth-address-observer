@@ -1,4 +1,4 @@
-/* 
+/*
 eth-address-observer is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -15,10 +15,10 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 /**
  * @file watch-list.test.ts
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
- * @date 2020
+ * @date 2021
  */
 import Web3 from "web3";
-import { EthAddressesObserver } from "../lib/eth/eth-addresses-observer";
+import { EthAddressesObserver } from "../eth/eth-addresses-observer";
 import { addressGenerator } from "./utils/address";
 const generator = addressGenerator();
 
@@ -26,7 +26,7 @@ const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);
 
 test("Should insert 1000000 addresses to watch-list (string)", async () => {
-	let observer = new EthAddressesObserver(web3);
+	const observer = new EthAddressesObserver(web3);
 
 	const length = 1000000;
 	for (let i = 0; i < length; i++) {
@@ -34,11 +34,10 @@ test("Should insert 1000000 addresses to watch-list (string)", async () => {
 	}
 
 	expect(observer.list.length).toBe(length);
-	observer = null;
 });
 
 test("Should insert 1000000 addresses to watch-list (array)", async () => {
-	let observer = new EthAddressesObserver(web3);
+	const observer = new EthAddressesObserver(web3);
 
 	const length = 1000000;
 	const arr = [];
@@ -48,11 +47,10 @@ test("Should insert 1000000 addresses to watch-list (array)", async () => {
 	observer.add(arr);
 
 	expect(observer.list.length).toBe(length);
-	observer = null;
 });
 
 test("Should remove 950000 addresses from watch-list of 1000000 addresses (string)", async () => {
-	let observer = new EthAddressesObserver(web3);
+	const observer = new EthAddressesObserver(web3);
 
 	const length = 1000000;
 	const addresses = [];
@@ -70,11 +68,10 @@ test("Should remove 950000 addresses from watch-list of 1000000 addresses (strin
 	});
 
 	expect(observer.list.length).toBe(length - length2);
-	observer = null;
 });
 
 test("Should remove 950000 addresses from watch-list of 1000000 addresses (array)", async () => {
-	let observer = new EthAddressesObserver(web3);
+	const observer = new EthAddressesObserver(web3);
 
 	const length = 1000000;
 	const addresses = [];
@@ -88,11 +85,10 @@ test("Should remove 950000 addresses from watch-list of 1000000 addresses (array
 	observer.remove(toRemove);
 
 	expect(observer.list.length).toBe(length - length2);
-	observer = null;
 });
 
 test("Should randomly add(), remove()", async () => {
-	let observer = new EthAddressesObserver(web3);
+	const observer = new EthAddressesObserver(web3);
 	const command = ["add", "remove"];
 	const commandsList = [];
 
@@ -127,5 +123,4 @@ test("Should randomly add(), remove()", async () => {
 	});
 
 	expect(observer.list.length).toBe(addedAddresses.length);
-	observer = null;
 });
