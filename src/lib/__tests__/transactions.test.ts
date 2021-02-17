@@ -22,7 +22,7 @@ import { EthAddressesObserver } from "../eth/eth-addresses-observer";
 import { addressGenerator, generateAddressesList, shuffleAddressToList } from "./utils/address";
 const generator = addressGenerator();
 
-jest.setTimeout(240000);
+jest.setTimeout(300000);
 
 const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);

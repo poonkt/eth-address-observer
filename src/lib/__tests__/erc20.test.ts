@@ -26,7 +26,7 @@ import { abi, bytecode } from "./contracts/BasicToken.json";
 import { addressGenerator, generateAddressesList, shuffleAddressToList } from "./utils/address";
 import { Erc20Transfer } from "../eth/erc20-transactions-collector";
 
-jest.setTimeout(60000);
+jest.setTimeout(120000);
 
 const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);
