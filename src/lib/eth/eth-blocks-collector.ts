@@ -20,16 +20,16 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 
 import Web3 from "web3";
 import { EventEmitter } from "events";
-import { BlocksCollectorCache } from "../blocks-collector-cache";
+import { CollectorCache } from "../collector-cache";
 
 export class EthBlocksCollector extends EventEmitter {
 	private readonly web3: Web3;
-	private readonly blocksCollectorCache: BlocksCollectorCache;
+	private readonly blocksCollectorCache: CollectorCache<number>;
 
 	constructor(web3: Web3, blocksCacheSize: number) {
 		super();
 		this.web3 = web3;
-		this.blocksCollectorCache = new BlocksCollectorCache(blocksCacheSize);
+		this.blocksCollectorCache = new CollectorCache(blocksCacheSize);
 
 		this.listen();
 	}
@@ -45,7 +45,7 @@ export class EthBlocksCollector extends EventEmitter {
 				});
 			})
 			.on("error", (error) => {
-				console.log(error);
+				console.error(error);
 			});
 	}
 }

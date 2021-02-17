@@ -36,17 +36,11 @@ Adding, removing and listing:
 ```js
 /** Adding ethereum address to observer */
 observer.add("0x0000000000000000000000000000000000000000");
-observer.add([
-	"0x0000000000000000000000000000000000000000",
-	"0x0000000000000000000000000000000000000001"
-]);
+observer.add(["0x0000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000001"]);
 
 /** Removing ethereum address from observer */
 observer.remove("0x0000000000000000000000000000000000000000");
-observer.remove([
-	"0x0000000000000000000000000000000000000000",
-	"0x0000000000000000000000000000000000000001"
-]);
+observer.remove(["0x0000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000001"]);
 
 /** Show observable addresses */
 console.log(observer.list);
@@ -79,6 +73,32 @@ observer.subscribe("success", async (transactionHash) => {
 	console.log(
 		`${transaction.to}: Transaction: ${transaction.hash} is CONFIRMED!`
 	);
+});
+```
+
+Listening for incoming token transfers:
+
+```js
+const tokens = new Map();
+tokens.set("0x022E292b44B5a146F2e8ee36Ff44D3dd863C915c".toLowerCase(), {
+	name: "XEENUS",
+	decimals: 18
+});
+tokens.set("0x1f9061B953bBa0E36BF50F21876132DcF276fC6e".toLowerCase(), {
+	name: "ZEENUS",
+	decimals: 0
+});
+
+function getTokenInfo(address) {
+	return tokens.get(address.toLowerCase()) || { name: "unknown token", decimals: "unknown" };
+}
+
+/** For any valid erc20 tokens with Transfer(address,address,uint256) event interface */
+observer.subscribe("token-transfer", (erc20Transfer) => {
+	const { token, from, to, value } = erc20Transfer;
+
+	const tokenInfo = getTokenInfo(token);
+	console.log(`${to}: Transfered ${value} ${tokenInfo.name} from ${from}`);
 });
 ```
 

@@ -4,12 +4,13 @@ declare class TreeBase {
     _root: any;
     size: number;
     find(data: any): any;
-    findIter(data: any): import("./iterator");
-    lowerBound(item: any): import("./iterator");
-    upperBound(item: any): import("./iterator");
+    findIter(data: any): Iterator;
+    lowerBound(item: any): Iterator;
+    upperBound(item: any): Iterator;
     min(): any;
     max(): any;
-    iterator(): import("./iterator");
+    iterator(): Iterator;
     each(cb: any): void;
     reach(cb: any): void;
 }
+import Iterator = require("./iterator");

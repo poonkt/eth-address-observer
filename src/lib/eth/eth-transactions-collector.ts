@@ -36,7 +36,7 @@ export class EthTransactionsCollector extends EventEmitter {
 		if (!foundTransactions.length) return;
 
 		foundTransactions.forEach((transaction) => {
-			this.emit("new-transaction", transaction);
+			this.emit("new-transfer", transaction);
 		});
 	}
 

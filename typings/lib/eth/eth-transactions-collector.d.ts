@@ -8,9 +8,8 @@ import { Transaction } from "web3-core";
 import { EventEmitter } from "events";
 import RBTree from "../../vendor/bintrees/lib/rbtree";
 export declare class EthTransactionsCollector extends EventEmitter {
-	private readonly transactionsCollectorCache;
-	private readonly watchList;
-	constructor(watchList: RBTree, transactionsCacheSize: number);
-	add(transactions: Transaction[]): Promise<void>;
-	private search;
+    private readonly watchList;
+    constructor(watchList: RBTree);
+    add(transactions: Transaction[]): Promise<void>;
+    private search;
 }

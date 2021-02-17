@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		// "lib": ["ES2020"],
 		"module": "CommonJS",
 		"target": "ES2017",
 		"outDir": "dist/",
@@ -10,10 +9,11 @@
 		"allowJs": true,
 		"esModuleInterop": true,
 		"importHelpers": true,
+		"resolveJsonModule": true,
 		"baseUrl": ".",
 		"paths": {
 			"typings": ["typings"]
 		}
 	},
-	"exclude": ["dist", "src/__tests__", "jest.config.js"]
+	"exclude": ["dist", "src/lib/__tests__", "jest.config.js", "sample.ts"]
 }

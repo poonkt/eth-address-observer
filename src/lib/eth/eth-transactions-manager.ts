@@ -37,15 +37,15 @@ export class EthTransactionsManager extends EventEmitter {
 	async add(transactionHash: string): Promise<void> {
 		const ethTransaction = new EthTransaction(this.web3, transactionHash, this.confirmationsRequired);
 
-		ethTransaction.on("pending", (transaction) => {
-			this.emit("pending", transaction);
+		ethTransaction.on("pending", (transactionHash: string) => {
+			this.emit("pending", transactionHash);
 		});
-		ethTransaction.on("confirmation", (confirmationNumber, transaction) => {
-			this.emit("confirmation", confirmationNumber, transaction);
+		ethTransaction.on("confirmation", (confirmationNumber: number, transactionHash: string) => {
+			this.emit("confirmation", confirmationNumber, transactionHash);
 		});
-		ethTransaction.once("success", (transaction) => {
+		ethTransaction.once("success", (transactionHash: string) => {
 			this.remove(transactionHash);
-			this.emit("success", transaction);
+			this.emit("success", transactionHash);
 		});
 
 		ethTransaction.init().then(() => {

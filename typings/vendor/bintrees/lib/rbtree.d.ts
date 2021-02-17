@@ -1,8 +1,8 @@
 export = RBTree;
-declare const RBTree_base: typeof import("./treebase");
-declare class RBTree extends RBTree_base {
+declare class RBTree extends TreeBase {
     constructor(comparator: any);
     _comparator: any;
     insert(data: any): boolean;
     remove(data: any): boolean;
 }
+import TreeBase = require("./treebase");
