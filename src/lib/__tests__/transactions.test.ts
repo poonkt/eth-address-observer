@@ -17,18 +17,17 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
  * @date 2021
  */
-/* eslint-disable jest/no-done-callback */
 import Web3 from "web3";
 import { EthAddressesObserver } from "../eth/eth-addresses-observer";
 import { addressGenerator, generateAddressesList, shuffleAddressToList } from "./utils/address";
 const generator = addressGenerator();
 
-jest.setTimeout(120000);
+jest.setTimeout(240000);
 
 const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);
 
-test("Should detect pending transaction in flood of random transactions", async (done) => {
+test("Should detect pending transaction in flood of random transactions", async () => {
 	const coinbase = await web3.eth.getCoinbase();
 
 	const desiredAddress = generator.next().value;
@@ -51,33 +50,30 @@ test("Should detect pending transaction in flood of random transactions", async 
 	observer.subscribe("confirmation", () => {
 		commits.confirmation = true;
 	});
-	observer.subscribe("success", async () => {
-		commits.success = true;
 
-		const balance = web3.utils.fromWei(await web3.eth.getBalance(desiredAddress), "ether");
-		expect(balance).toBe("1");
-		expect(commits.pending).toBeTruthy();
-		expect(commits.confirmation).toBeTruthy();
-		expect(commits.success).toBeTruthy();
+	await new Promise((resolve) => {
+		observer.subscribe("success", () => {
+			commits.success = true;
+			resolve(true);
+		});
 
-		done();
+		for (let i = 0; i < recipients.length; i++) {
+			web3.eth.sendTransaction({
+				from: coinbase,
+				to: recipients[i],
+				value: web3.utils.toWei("1", "ether")
+			});
+		}
 	});
 
-	for (let i = 0; i < recipients.length; i++) {
-		await new Promise((resolve) => {
-			setTimeout(async () => {
-				web3.eth.sendTransaction({
-					from: coinbase,
-					to: recipients[i],
-					value: web3.utils.toWei("1", "ether")
-				});
-				resolve(true);
-			}, 0);
-		});
-	}
+	const balance = web3.utils.fromWei(await web3.eth.getBalance(desiredAddress), "ether");
+	expect(balance).toBe("1");
+	expect(commits.pending).toBeTruthy();
+	expect(commits.confirmation).toBeTruthy();
+	expect(commits.success).toBeTruthy();
 });
 
-it("Should detect all incoming transactions to observable addresses", async (done) => {
+it("Should detect all incoming transactions to observable addresses", async () => {
 	const coinbaseAddress = await web3.eth.getCoinbase();
 
 	const addresses = generateAddressesList(1000);
@@ -85,21 +81,26 @@ it("Should detect all incoming transactions to observable addresses", async (don
 	const observer = new EthAddressesObserver(web3);
 	observer.add(addresses);
 
-	const pendingCb = jest.fn();
-	observer.subscribe("pending", pendingCb);
+	const result = await new Promise((resolve) => {
+		let i = 0;
+		observer.subscribe("pending", () => {
+			i++;
 
-	setTimeout(() => {
-		expect(pendingCb.mock.calls.length).toBe(1000 * 5);
-		done();
-	}, 110000);
-
-	for (let i = 0; i < addresses.length * 5; i++) {
-		const random = Math.floor(Math.random() * addresses.length);
-
-		web3.eth.sendTransaction({
-			from: coinbaseAddress,
-			to: addresses[random],
-			value: web3.utils.toWei("1", "ether")
+			if (i === 5000) {
+				resolve(true);
+			}
 		});
-	}
+
+		for (let i = 0; i < addresses.length * 5; i++) {
+			const random = Math.floor(Math.random() * addresses.length);
+
+			web3.eth.sendTransaction({
+				from: coinbaseAddress,
+				to: addresses[random],
+				value: web3.utils.toWei("1", "ether")
+			});
+		}
+	});
+
+	expect(result).toBeTruthy();
 });
