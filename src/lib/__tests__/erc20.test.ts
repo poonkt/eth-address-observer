@@ -55,7 +55,7 @@ it("Catch incoming transfer to observable address", async (done) => {
 	observer.add(address);
 	observer.subscribe("token-transfer", (erc20Transfer: ERC20Transfer) => {
 		expect(erc20Transfer).toMatchObject({
-			token: pnktToken.options.address,
+			address: pnktToken.options.address,
 			from: coinbase.toLowerCase(),
 			to: address,
 			value: "1000"
