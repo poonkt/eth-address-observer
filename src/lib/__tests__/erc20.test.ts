@@ -24,7 +24,7 @@ import { AbiItem } from "web3-utils";
 import { Contract } from "web3-eth-contract";
 import { abi, bytecode } from "./contracts/BasicToken.json";
 import { addressGenerator, generateAddressesList, shuffleAddressToList } from "./utils/address";
-import { Erc20Transfer } from "../eth/erc20-transactions-collector";
+import { ERC20Transfer } from "../eth/erc20-transactions-collector";
 
 jest.setTimeout(60000);
 
@@ -53,7 +53,7 @@ it("Catch incoming transfer to observable address", async (done) => {
 	const address = generator.next().value;
 
 	observer.add(address);
-	observer.subscribe("token-transfer", (erc20Transfer: Erc20Transfer) => {
+	observer.subscribe("token-transfer", (erc20Transfer: ERC20Transfer) => {
 		expect(erc20Transfer).toMatchObject({
 			token: pnktToken.options.address,
 			from: coinbase.toLowerCase(),
@@ -77,7 +77,7 @@ it("Catch incoming transfer to observable address in flood of transactions", asy
 	const recipients = shuffleAddressToList(address, generateAddressesList(999));
 
 	observer.add(address);
-	observer.subscribe("token-transfer", (erc20Transfer: Erc20Transfer) => {
+	observer.subscribe("token-transfer", (erc20Transfer: ERC20Transfer) => {
 		expect(erc20Transfer).toMatchObject({
 			token: pnktToken.options.address,
 			from: coinbase.toLowerCase(),
