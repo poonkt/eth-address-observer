@@ -8,14 +8,14 @@ import Web3 from "web3";
 import { Log } from "web3-core";
 import { EventEmitter } from "events";
 import RBTree from "../../vendor/bintrees/lib/rbtree";
-export interface Erc20Transfer {
-    token: string;
+export interface ERC20Transfer {
+    address: string;
     from: string;
     to: string;
     value: string;
     log: Log;
 }
-export declare class Erc20TransactionsCollector extends EventEmitter {
+export declare class ERC20TransactionsCollector extends EventEmitter {
     private readonly web3;
     private readonly erc20TransactionsCollectorCache;
     private readonly watchList;
