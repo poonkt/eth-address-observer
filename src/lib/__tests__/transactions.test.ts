@@ -28,7 +28,7 @@ jest.setTimeout(120000);
 const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);
 
-test("Should detect pending transaction in flood of transactions", async (done) => {
+test("Should detect pending transaction in flood of random transactions", async (done) => {
 	const coinbase = await web3.eth.getCoinbase();
 
 	const desiredAddress = generator.next().value;
@@ -73,6 +73,33 @@ test("Should detect pending transaction in flood of transactions", async (done) 
 				});
 				resolve(true);
 			}, 0);
+		});
+	}
+});
+
+it("Should detect all incoming transactions to observable addresses", async (done) => {
+	const coinbaseAddress = await web3.eth.getCoinbase();
+
+	const addresses = generateAddressesList(1000);
+
+	const observer = new EthAddressesObserver(web3);
+	observer.add(addresses);
+
+	const pendingCb = jest.fn();
+	observer.subscribe("pending", pendingCb);
+
+	setTimeout(() => {
+		expect(pendingCb.mock.calls.length).toBe(1000 * 5);
+		done();
+	}, 110000);
+
+	for (let i = 0; i < addresses.length * 5; i++) {
+		const random = Math.floor(Math.random() * addresses.length);
+
+		web3.eth.sendTransaction({
+			from: coinbaseAddress,
+			to: addresses[random],
+			value: web3.utils.toWei("1", "ether")
 		});
 	}
 });
