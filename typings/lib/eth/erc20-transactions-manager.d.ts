@@ -5,8 +5,8 @@
  */
 /// <reference types="node" />
 import { EventEmitter } from "events";
-import { Erc20Transfer } from "./erc20-transactions-collector";
-export declare class Erc20TransactionsManager extends EventEmitter {
+import { ERC20Transfer } from "./erc20-transactions-collector";
+export declare class ERC20TransactionsManager extends EventEmitter {
     constructor();
-    add(transfer: Erc20Transfer): void;
+    add(transfer: ERC20Transfer): void;
 }

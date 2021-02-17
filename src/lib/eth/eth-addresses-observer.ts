@@ -20,8 +20,8 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 
 import Web3 from "web3";
 import { AddressesObserver, AddressesObserverConfig } from "../addresses-observer";
-import { Erc20TransactionsCollector, Erc20Transfer } from "./erc20-transactions-collector";
-import { Erc20TransactionsManager } from "./erc20-transactions-manager";
+import { ERC20TransactionsCollector, ERC20Transfer } from "./erc20-transactions-collector";
+import { ERC20TransactionsManager } from "./erc20-transactions-manager";
 import { EthBlocksCollector } from "./eth-blocks-collector";
 import { EthTransactionsCollector } from "./eth-transactions-collector";
 import { EthTransactionsManager } from "./eth-transactions-manager";
@@ -39,8 +39,8 @@ export class EthAddressesObserver extends AddressesObserver {
 	ethTransactionsCollector: EthTransactionsCollector;
 	ethTransactionsManager: EthTransactionsManager;
 
-	erc20TransactionsCollector: Erc20TransactionsCollector;
-	erc20TransactionsManager: Erc20TransactionsManager;
+	erc20TransactionsCollector: ERC20TransactionsCollector;
+	erc20TransactionsManager: ERC20TransactionsManager;
 
 	constructor(web3: Web3, config: EthAddressesObserverConfig = {}) {
 		config.confirmationsRequired = config.confirmationsRequired || 12;
@@ -54,16 +54,16 @@ export class EthAddressesObserver extends AddressesObserver {
 		this.ethTransactionsCollector = new EthTransactionsCollector(this.watchList);
 		this.ethTransactionsManager = new EthTransactionsManager(web3, config.confirmationsRequired);
 
-		this.erc20TransactionsCollector = new Erc20TransactionsCollector(web3, config.erc20CacheSize, this.watchList);
-		this.erc20TransactionsManager = new Erc20TransactionsManager();
+		this.erc20TransactionsCollector = new ERC20TransactionsCollector(web3, config.erc20CacheSize, this.watchList);
+		this.erc20TransactionsManager = new ERC20TransactionsManager();
 
 		this.ethBlocksCollector.on("new-block", (latestBlockNumber: number) => {
 			this.process(latestBlockNumber);
 		});
-		this.ethTransactionsCollector.on("new-transfer", (transactionHash: string) => {
+		this.ethTransactionsCollector.on("new-transaction", (transactionHash: string) => {
 			this.addTransaction(transactionHash);
 		});
-		this.erc20TransactionsCollector.on("new-transfer", (transfer: Erc20Transfer) => {
+		this.erc20TransactionsCollector.on("new-transfer", (transfer: ERC20Transfer) => {
 			this.erc20TransactionsManager.add(transfer);
 		});
 	}

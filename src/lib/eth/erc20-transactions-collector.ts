@@ -24,15 +24,15 @@ import { EventEmitter } from "events";
 import { CollectorCache } from "../collector-cache";
 import RBTree from "../../vendor/bintrees/lib/rbtree";
 
-export interface Erc20Transfer {
-	token: string;
+export interface ERC20Transfer {
+	address: string;
 	from: string;
 	to: string;
 	value: string;
 	log: Log;
 }
 
-export class Erc20TransactionsCollector extends EventEmitter {
+export class ERC20TransactionsCollector extends EventEmitter {
 	private readonly web3: Web3;
 	private readonly erc20TransactionsCollectorCache: CollectorCache<string>;
 	private readonly watchList: RBTree;
@@ -69,7 +69,7 @@ export class Erc20TransactionsCollector extends EventEmitter {
 			});
 	}
 
-	private search(log: Log): Erc20Transfer | null {
+	private search(log: Log): ERC20Transfer | null {
 		let [, from, to] = log.topics;
 
 		to = this.decode(to);
@@ -78,7 +78,7 @@ export class Erc20TransactionsCollector extends EventEmitter {
 			from = this.decode(from);
 			const value = this.web3.utils.hexToNumberString(log.data);
 
-			return { token: log.address, from, to, value, log };
+			return { address: log.address, from, to, value, log };
 		}
 	}
 

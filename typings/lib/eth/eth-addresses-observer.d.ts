@@ -5,8 +5,8 @@
  */
 import Web3 from "web3";
 import { AddressesObserver, AddressesObserverConfig } from "../addresses-observer";
-import { Erc20TransactionsCollector } from "./erc20-transactions-collector";
-import { Erc20TransactionsManager } from "./erc20-transactions-manager";
+import { ERC20TransactionsCollector } from "./erc20-transactions-collector";
+import { ERC20TransactionsManager } from "./erc20-transactions-manager";
 import { EthBlocksCollector } from "./eth-blocks-collector";
 import { EthTransactionsCollector } from "./eth-transactions-collector";
 import { EthTransactionsManager } from "./eth-transactions-manager";
@@ -19,8 +19,8 @@ export declare class EthAddressesObserver extends AddressesObserver {
     ethBlocksCollector: EthBlocksCollector;
     ethTransactionsCollector: EthTransactionsCollector;
     ethTransactionsManager: EthTransactionsManager;
-    erc20TransactionsCollector: Erc20TransactionsCollector;
-    erc20TransactionsManager: Erc20TransactionsManager;
+    erc20TransactionsCollector: ERC20TransactionsCollector;
+    erc20TransactionsManager: ERC20TransactionsManager;
     constructor(web3: Web3, config?: EthAddressesObserverConfig);
     subscribe<T>(type: SubscriptionType, handler: (...args: T[]) => void): void;
     toBigInt(address: string): bigint;
