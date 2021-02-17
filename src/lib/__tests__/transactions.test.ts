@@ -23,6 +23,7 @@ import { addressGenerator, generateAddressesList, shuffleAddressToList } from ".
 const generator = addressGenerator();
 
 jest.setTimeout(300000);
+jest.useFakeTimers();
 
 const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);
