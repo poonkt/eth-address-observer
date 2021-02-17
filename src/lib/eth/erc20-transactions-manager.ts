@@ -19,14 +19,14 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import { EventEmitter } from "events";
-import { Erc20Transfer } from "./erc20-transactions-collector";
+import { ERC20Transfer } from "./erc20-transactions-collector";
 
-export class Erc20TransactionsManager extends EventEmitter {
+export class ERC20TransactionsManager extends EventEmitter {
 	constructor() {
 		super();
 	}
 
-	add(transfer: Erc20Transfer): void {
+	add(transfer: ERC20Transfer): void {
 		this.emit("token-transfer", transfer);
 	}
 }

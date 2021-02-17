@@ -95,7 +95,7 @@ function getTokenInfo(address) {
 
 /** For any valid erc20 tokens with Transfer(address,address,uint256) event interface */
 observer.subscribe("token-transfer", (erc20Transfer) => {
-	const { token, from, to, value } = erc20Transfer;
+	const { address, from, to, value } = erc20Transfer;
 
 	const tokenInfo = getTokenInfo(token);
 	console.log(`${to}: Transfered ${value} ${tokenInfo.name} from ${from}`);
