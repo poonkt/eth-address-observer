@@ -50,9 +50,11 @@ export class EthAddressesObserver extends AddressesObserver {
 	erc20TransactionsCollector: ERC20TransactionsCollector;
 	erc20TransactionsManager: TransactionsManager;
 
-	constructor(web3: Web3, config: EthAddressesObserverConfig = { erc20: {} }) {
+	constructor(web3: Web3, config?: EthAddressesObserverConfig) {
+		config = {};
 		config.confirmationsRequired = config.confirmationsRequired || 12;
 
+		config.erc20 = {};
 		config.erc20.confirmationsRequired = config.erc20.confirmationsRequired || 12;
 		config.erc20.cacheSize = config.erc20.cacheSize || 512;
 
