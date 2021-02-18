@@ -53,7 +53,7 @@ it("Catch incoming transfer to observable address", async (done) => {
 	const address = generator.next().value;
 
 	observer.add(address);
-	observer.subscribe("token-transfer", (erc20Transfer: ERC20Transfer) => {
+	observer.subscribe("transfer-pending", (_: string, erc20Transfer: ERC20Transfer) => {
 		expect(erc20Transfer).toMatchObject({
 			address: pnktToken.options.address,
 			from: coinbase.toLowerCase(),
@@ -77,7 +77,7 @@ it("Catch incoming transfer to observable address in flood of transactions", asy
 	const recipients = shuffleAddressToList(address, generateAddressesList(999));
 
 	observer.add(address);
-	observer.subscribe("token-transfer", (erc20Transfer: ERC20Transfer) => {
+	observer.subscribe("transfer-pending", (_: string, erc20Transfer: ERC20Transfer) => {
 		expect(erc20Transfer).toMatchObject({
 			address: pnktToken.options.address,
 			from: coinbase.toLowerCase(),

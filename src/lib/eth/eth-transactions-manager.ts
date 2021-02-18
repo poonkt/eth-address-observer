@@ -15,7 +15,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 /**
  * @file eth-transactions-manager.ts
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
- * @date 2020
+ * @date 2021
  */
 
 import Web3 from "web3";
@@ -34,18 +34,18 @@ export class EthTransactionsManager extends EventEmitter {
 		this.transactions = new Map();
 	}
 
-	async add(transactionHash: string): Promise<void> {
+	async add(transactionHash: string, payload?: unknown): Promise<void> {
 		const ethTransaction = new EthTransaction(this.web3, transactionHash, this.confirmationsRequired);
 
 		ethTransaction.on("pending", (transactionHash: string) => {
-			this.emit("pending", transactionHash);
+			this.emit("pending", transactionHash, payload);
 		});
 		ethTransaction.on("confirmation", (confirmationNumber: number, transactionHash: string) => {
-			this.emit("confirmation", confirmationNumber, transactionHash);
+			this.emit("confirmation", confirmationNumber, transactionHash, payload);
 		});
 		ethTransaction.once("success", (transactionHash: string) => {
 			this.remove(transactionHash);
-			this.emit("success", transactionHash);
+			this.emit("success", transactionHash, payload);
 		});
 
 		ethTransaction.init().then(() => {
