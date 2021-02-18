@@ -13,21 +13,21 @@ You should have received a copy of the GNU General Public License
 along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 */
 /**
- * @file eth-transaction.ts
+ * @file transaction.ts
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
- * @date 2020
+ * @date 2021
  */
 
 import { EventEmitter } from "events";
 import Web3 from "web3";
-import { Transaction, TransactionReceipt } from "web3-core";
+import { Transaction as ITransaction, TransactionReceipt } from "web3-core";
 
-export class EthTransaction extends EventEmitter {
+export class Transaction extends EventEmitter {
 	private readonly web3: Web3;
 	private readonly confirmationsRequired: number;
 	private readonly transactionHash: string;
 
-	private transaction?: Transaction;
+	private transaction?: ITransaction;
 	private transactionReceipt?: TransactionReceipt;
 	private blockHash: string;
 

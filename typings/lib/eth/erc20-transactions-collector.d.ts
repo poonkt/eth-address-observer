@@ -9,6 +9,7 @@ import { Log } from "web3-core";
 import { EventEmitter } from "events";
 import RBTree from "../../vendor/bintrees/lib/rbtree";
 export interface ERC20Transfer {
+    hash: string;
     address: string;
     from: string;
     to: string;

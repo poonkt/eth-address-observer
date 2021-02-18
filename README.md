@@ -19,14 +19,17 @@ npm install eth-address-observer
 ```js
 const Web3 = require("web3");
 const { EthAddressObserver } = require("eth-address-observer");
-import { EthAddressObserver } from 'eth-address-observer' // or
+import { EthAddressObserver } from "eth-address-observer"; // or
 
 /** Requires websocket or ipc provider */
 const web3 = new Web3("ws://localhost:8546");
 
 /** Optional config */
 const config = {
-	confirmationsRequired: 12; // default
+	confirmationsRequired: 12, // default
+	erc20: {
+		confirmationsRequired: 12 // default
+	}
 };
 const observer = new EthAddressObserver(web3, config);
 ```
@@ -94,11 +97,27 @@ function getTokenInfo(address) {
 }
 
 /** For any valid erc20 tokens with Transfer(address,address,uint256) event interface */
-observer.subscribe("token-transfer", (erc20Transfer) => {
-	const { address, from, to, value } = erc20Transfer;
+observer.subscribe("transfer-pending", (transactionHash, erc20Transfer) => {
+	const { hash, address, from, to, value, log } = erc20Transfer;
 
-	const tokenInfo = getTokenInfo(token);
-	console.log(`${to}: Transfered ${value} ${tokenInfo.name} from ${from}`);
+	const tokenInfo = getTokenInfo(address);
+	console.log(`${to}: ${tokenInfo.name} Transaction: ${transactionHash} in PENDING state`);
+});
+
+observer.subscribe("transfer-confirmation", (confirmationNumber, transactionHash, erc20Transfer) => {
+	const { hash, address, from, to, value, log } = erc20Transfer;
+
+	const tokenInfo = getTokenInfo(address);
+	console.log(
+		`${to}: ${tokenInfo.name} Transaction: ${transactionHash} new CONFIRMATION: ${confirmationNumber}, in block ${log.blockHash}`
+	);
+});
+
+observer.subscribe("transfer-success", (transactionHash, erc20Transfer) => {
+	const { hash, address, from, to, value, log } = erc20Transfer;
+
+	const tokenInfo = getTokenInfo(address);
+	console.log(`${to}: ${tokenInfo.name} Transaction: ${transactionHash} is CONFIRMED!`);
 });
 ```
 

@@ -25,6 +25,7 @@ import { CollectorCache } from "../collector-cache";
 import RBTree from "../../vendor/bintrees/lib/rbtree";
 
 export interface ERC20Transfer {
+	hash: string;
 	address: string;
 	from: string;
 	to: string;
@@ -70,15 +71,16 @@ export class ERC20TransactionsCollector extends EventEmitter {
 	}
 
 	private search(log: Log): ERC20Transfer | null {
-		let [, from, to] = log.topics;
+		const { data, topics, address, transactionHash } = log;
+		let [, from, to] = topics;
 
 		to = this.decode(to);
 
 		if (this.watchList.find(BigInt(to)) !== null) {
 			from = this.decode(from);
-			const value = this.web3.utils.hexToNumberString(log.data);
+			const value = this.web3.utils.hexToNumberString(data);
 
-			return { address: log.address, from, to, value, log };
+			return { hash: transactionHash, address, from, to, value, log };
 		}
 	}
 
