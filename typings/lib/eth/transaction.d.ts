@@ -1,12 +1,12 @@
 /**
- * @file eth-transaction.ts
+ * @file transaction.ts
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
- * @date 2020
+ * @date 2021
  */
 /// <reference types="node" />
 import { EventEmitter } from "events";
 import Web3 from "web3";
-export declare class EthTransaction extends EventEmitter {
+export declare class Transaction extends EventEmitter {
     private readonly web3;
     private readonly confirmationsRequired;
     private readonly transactionHash;
