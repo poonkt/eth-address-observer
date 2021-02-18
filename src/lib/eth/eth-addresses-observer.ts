@@ -23,7 +23,7 @@ import { AddressesObserver, AddressesObserverConfig } from "../addresses-observe
 import { ERC20TransactionsCollector, ERC20Transfer } from "./erc20-transactions-collector";
 import { EthBlocksCollector } from "./eth-blocks-collector";
 import { EthTransactionsCollector } from "./eth-transactions-collector";
-import { EthTransactionsManager } from "./eth-transactions-manager";
+import { TransactionsManager } from "./transactions-manager";
 
 export interface EthAddressesObserverConfig extends Partial<AddressesObserverConfig> {
 	erc20?: {
@@ -45,10 +45,10 @@ export class EthAddressesObserver extends AddressesObserver {
 	ethBlocksCollector: EthBlocksCollector;
 
 	ethTransactionsCollector: EthTransactionsCollector;
-	ethTransactionsManager: EthTransactionsManager;
+	ethTransactionsManager: TransactionsManager;
 
 	erc20TransactionsCollector: ERC20TransactionsCollector;
-	erc20TransactionsManager: EthTransactionsManager;
+	erc20TransactionsManager: TransactionsManager;
 
 	constructor(web3: Web3, config: EthAddressesObserverConfig = { erc20: {} }) {
 		config.confirmationsRequired = config.confirmationsRequired || 12;
@@ -63,10 +63,10 @@ export class EthAddressesObserver extends AddressesObserver {
 		this.ethBlocksCollector = new EthBlocksCollector(web3, config.blocksCacheSize);
 
 		this.ethTransactionsCollector = new EthTransactionsCollector(this.watchList);
-		this.ethTransactionsManager = new EthTransactionsManager(web3, config.confirmationsRequired);
+		this.ethTransactionsManager = new TransactionsManager(web3, config.confirmationsRequired);
 
 		this.erc20TransactionsCollector = new ERC20TransactionsCollector(web3, config.erc20.cacheSize, this.watchList);
-		this.erc20TransactionsManager = new EthTransactionsManager(web3, config.erc20.confirmationsRequired);
+		this.erc20TransactionsManager = new TransactionsManager(web3, config.erc20.confirmationsRequired);
 
 		this.ethBlocksCollector.on("new-block", (latestBlockNumber: number) => {
 			this.process(latestBlockNumber);

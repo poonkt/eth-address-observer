@@ -13,19 +13,19 @@ You should have received a copy of the GNU General Public License
 along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 */
 /**
- * @file eth-transactions-manager.ts
+ * @file transactions-manager.ts
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
  * @date 2021
  */
 
 import Web3 from "web3";
 import { EventEmitter } from "events";
-import { EthTransaction } from "./eth-transaction";
+import { Transaction } from "./transaction";
 
-export class EthTransactionsManager extends EventEmitter {
+export class TransactionsManager extends EventEmitter {
 	private readonly web3: Web3;
 	private readonly confirmationsRequired: number;
-	private transactions: Map<string, EthTransaction>;
+	private transactions: Map<string, Transaction>;
 
 	constructor(web3: Web3, confirmationsRequired: number) {
 		super();
@@ -35,7 +35,7 @@ export class EthTransactionsManager extends EventEmitter {
 	}
 
 	async add(transactionHash: string, payload?: unknown): Promise<void> {
-		const ethTransaction = new EthTransaction(this.web3, transactionHash, this.confirmationsRequired);
+		const ethTransaction = new Transaction(this.web3, transactionHash, this.confirmationsRequired);
 
 		ethTransaction.on("pending", (transactionHash: string) => {
 			this.emit("pending", transactionHash, payload);
