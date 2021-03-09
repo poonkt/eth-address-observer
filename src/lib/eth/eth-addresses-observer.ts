@@ -42,33 +42,35 @@ export type SubscriptionType =
 export class EthAddressesObserver extends AddressesObserver {
 	private readonly web3: Web3;
 
-	ethBlocksCollector: EthBlocksCollector;
+	private ethBlocksCollector: EthBlocksCollector;
 
-	ethTransactionsCollector: EthTransactionsCollector;
-	ethTransactionsManager: TransactionsManager;
+	private ethTransactionsCollector: EthTransactionsCollector;
+	private ethTransactionsManager: TransactionsManager;
 
-	erc20TransactionsCollector: ERC20TransactionsCollector;
-	erc20TransactionsManager: TransactionsManager;
+	private erc20TransactionsCollector: ERC20TransactionsCollector;
+	private erc20TransactionsManager: TransactionsManager;
 
 	constructor(web3: Web3, config?: EthAddressesObserverConfig) {
-		config = {};
-		config.confirmationsRequired = config.confirmationsRequired || 12;
+		const _config = {
+			blocksCacheSize: config?.blocksCacheSize || 64,
+			confirmationsRequired: config?.confirmationsRequired || 12,
+			erc20: {
+				confirmationsRequired: config?.erc20?.confirmationsRequired || 12,
+				cacheSize: config?.erc20?.cacheSize || 512
+			}
+		};
 
-		config.erc20 = {};
-		config.erc20.confirmationsRequired = config.erc20.confirmationsRequired || 12;
-		config.erc20.cacheSize = config.erc20.cacheSize || 512;
-
-		super(config as AddressesObserverConfig);
+		super(_config as AddressesObserverConfig);
 
 		this.web3 = web3;
 
-		this.ethBlocksCollector = new EthBlocksCollector(web3, config.blocksCacheSize);
+		this.ethBlocksCollector = new EthBlocksCollector(web3, _config.blocksCacheSize);
 
 		this.ethTransactionsCollector = new EthTransactionsCollector(this.watchList);
-		this.ethTransactionsManager = new TransactionsManager(web3, config.confirmationsRequired);
+		this.ethTransactionsManager = new TransactionsManager(web3, _config.confirmationsRequired);
 
-		this.erc20TransactionsCollector = new ERC20TransactionsCollector(web3, config.erc20.cacheSize, this.watchList);
-		this.erc20TransactionsManager = new TransactionsManager(web3, config.erc20.confirmationsRequired);
+		this.erc20TransactionsCollector = new ERC20TransactionsCollector(web3, _config.erc20.cacheSize, this.watchList);
+		this.erc20TransactionsManager = new TransactionsManager(web3, _config.erc20.confirmationsRequired);
 
 		this.ethBlocksCollector.on("new-block", (latestBlockNumber: number) => {
 			this.process(latestBlockNumber);
