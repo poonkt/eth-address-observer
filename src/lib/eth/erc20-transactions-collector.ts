@@ -70,9 +70,13 @@ export class ERC20TransactionsCollector extends EventEmitter {
 			});
 	}
 
-	private search(log: Log): ERC20Transfer | null {
+	private search(log: Log): ERC20Transfer | undefined {
 		const { data, topics, address, transactionHash } = log;
 		let [, from, to] = topics;
+
+		if (!from || !to) {
+			return;
+		}
 
 		to = this.decode(to);
 
