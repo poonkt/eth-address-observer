@@ -69,12 +69,13 @@ export class EthAddressesObserver extends AddressesObserver {
 		this.ethTransactionsCollector = new EthTransactionsCollector(this.watchList);
 		this.ethTransactionsManager = new TransactionsManager(web3, _config.confirmationsRequired);
 
-		this.erc20TransactionsCollector = new ERC20TransactionsCollector(web3, _config.erc20.cacheSize, this.watchList);
+		this.erc20TransactionsCollector = new ERC20TransactionsCollector(web3, this.watchList);
 		this.erc20TransactionsManager = new TransactionsManager(web3, _config.erc20.confirmationsRequired);
 
 		this.ethBlocksCollector.on("new-block", (latestBlockNumber: number) => {
 			this.process(latestBlockNumber);
 		});
+
 		this.ethTransactionsCollector.on("new-transaction", (transactionHash: string) => {
 			this.addTransaction(transactionHash);
 		});
@@ -113,8 +114,15 @@ export class EthAddressesObserver extends AddressesObserver {
 	private async process(blockNumber: number) {
 		try {
 			const { transactions } = await this.web3.eth.getBlock(blockNumber, true);
+			const logs = await this.web3.eth.getPastLogs({
+				fromBlock: blockNumber,
+				topics: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+			});
+
 			this.ethTransactionsCollector.add(transactions);
 			this.ethTransactionsManager.process(blockNumber);
+
+			this.erc20TransactionsCollector.add(logs);
 			this.erc20TransactionsManager.process(blockNumber);
 		} catch (error) {
 			this.process(blockNumber);

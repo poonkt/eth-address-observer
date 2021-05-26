@@ -2,13 +2,7 @@
 	"root": true,
 	"parser": "@typescript-eslint/parser",
 	"plugins": ["@typescript-eslint"],
-	"extends": [
-		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended",
-		"prettier",
-		"prettier/@typescript-eslint",
-		"plugin:jest/recommended"
-	],
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier", "plugin:jest/recommended"],
 	"env": {
 		"node": true
 	}
