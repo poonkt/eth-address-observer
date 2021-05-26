@@ -31,7 +31,7 @@ export class EthTransactionsCollector extends EventEmitter {
 	}
 
 	async add(transactions: Transaction[]): Promise<void> {
-		const foundTransactions = await this.search(transactions);
+		const foundTransactions = this.search(transactions);
 
 		if (!foundTransactions.length) return;
 
@@ -40,7 +40,7 @@ export class EthTransactionsCollector extends EventEmitter {
 		});
 	}
 
-	private async search(transactions: Transaction[]): Promise<string[]> {
+	private search(transactions: Transaction[]): string[] {
 		const foundTransactionsHash = transactions.map((transaction) => {
 			if (transaction.to && this.watchList.find(BigInt(transaction.to)) !== null) {
 				return transaction.hash;

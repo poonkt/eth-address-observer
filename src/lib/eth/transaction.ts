@@ -30,6 +30,7 @@ export class Transaction extends EventEmitter {
 	private transaction?: ITransaction;
 	private transactionReceipt?: TransactionReceipt;
 	private blockHash: string;
+	private confirmations: number;
 
 	constructor(web3: Web3, transactionHash: string, confirmationsRequired: number) {
 		super();
@@ -54,8 +55,10 @@ export class Transaction extends EventEmitter {
 		}
 
 		const confirmationNumber = latestBlockNumber - this.transactionReceipt.blockNumber;
+		if (confirmationNumber <= this.confirmations) return;
+		this.confirmations = confirmationNumber;
 
-		if (confirmationNumber >= this.confirmationsRequired) {
+		if (this.confirmations >= this.confirmationsRequired) {
 			this.transactionReceipt = await this.web3.eth.getTransactionReceipt(this.transactionHash);
 
 			if (!this.transactionReceipt) return;

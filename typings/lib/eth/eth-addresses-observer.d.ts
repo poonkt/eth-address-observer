@@ -5,10 +5,6 @@
  */
 import Web3 from "web3";
 import { AddressesObserver, AddressesObserverConfig } from "../addresses-observer";
-import { ERC20TransactionsCollector } from "./erc20-transactions-collector";
-import { EthBlocksCollector } from "./eth-blocks-collector";
-import { EthTransactionsCollector } from "./eth-transactions-collector";
-import { TransactionsManager } from "./transactions-manager";
 export interface EthAddressesObserverConfig extends Partial<AddressesObserverConfig> {
     erc20?: {
         confirmationsRequired?: number;
@@ -18,11 +14,11 @@ export interface EthAddressesObserverConfig extends Partial<AddressesObserverCon
 export declare type SubscriptionType = "pending" | "confirmation" | "success" | "transfer-pending" | "transfer-confirmation" | "transfer-success";
 export declare class EthAddressesObserver extends AddressesObserver {
     private readonly web3;
-    ethBlocksCollector: EthBlocksCollector;
-    ethTransactionsCollector: EthTransactionsCollector;
-    ethTransactionsManager: TransactionsManager;
-    erc20TransactionsCollector: ERC20TransactionsCollector;
-    erc20TransactionsManager: TransactionsManager;
+    private ethBlocksCollector;
+    private ethTransactionsCollector;
+    private ethTransactionsManager;
+    private erc20TransactionsCollector;
+    private erc20TransactionsManager;
     constructor(web3: Web3, config?: EthAddressesObserverConfig);
     subscribe(type: SubscriptionType, handler: (...args: any[]) => void): void;
     toBigInt(address: string): bigint;
