@@ -17,7 +17,6 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  * @author Vitaly Snitovets <v.snitovets@gmail.com>
  * @date 2021
  */
-/* eslint-disable jest/no-done-callback */
 import Web3 from "web3";
 import { EthAddressesObserver } from "../eth/eth-addresses-observer";
 import { AbiItem } from "web3-utils";
@@ -47,29 +46,31 @@ beforeAll(async () => {
 		.send({ from: coinbase, gas: 3000000 });
 });
 
-it("Catch incoming transfer to observable address", async (done) => {
+it("Catch incoming transfer to observable address", async () => {
 	const observer = new EthAddressesObserver(web3);
 
 	const address = generator.next().value;
 
 	observer.add(address);
-	observer.subscribe("transfer-pending", (_: string, erc20Transfer: ERC20Transfer) => {
-		expect(erc20Transfer).toMatchObject({
-			address: pnktToken.options.address,
-			from: coinbase.toLowerCase(),
-			to: address,
-			value: "1000"
+	const erc20Transfer = await new Promise<ERC20Transfer>((resolve) => {
+		observer.subscribe("transfer-pending", (_: string, erc20Transfer: ERC20Transfer) => {
+			resolve(erc20Transfer);
 		});
 
-		done();
+		pnktToken.methods.transfer(address, "1000").send({
+			from: coinbase
+		});
 	});
 
-	await pnktToken.methods.transfer(address, "1000").send({
-		from: coinbase
+	expect(erc20Transfer).toMatchObject({
+		address: pnktToken.options.address,
+		from: coinbase.toLowerCase(),
+		to: address,
+		value: "1000"
 	});
 });
 
-it("Catch incoming transfer to observable address in flood of transactions", async (done) => {
+it("Catch incoming transfer to observable address in flood of transactions", async () => {
 	const observer = new EthAddressesObserver(web3);
 
 	const address = generator.next().value;
@@ -77,25 +78,23 @@ it("Catch incoming transfer to observable address in flood of transactions", asy
 	const recipients = shuffleAddressToList(address, generateAddressesList(999));
 
 	observer.add(address);
-	observer.subscribe("transfer-pending", (_: string, erc20Transfer: ERC20Transfer) => {
-		expect(erc20Transfer).toMatchObject({
-			address: pnktToken.options.address,
-			from: coinbase.toLowerCase(),
-			to: address,
-			value: "1000"
+
+	const erc20Transfer = await new Promise<ERC20Transfer>((resolve) => {
+		observer.subscribe("transfer-pending", (_: string, erc20Transfer: ERC20Transfer) => {
+			resolve(erc20Transfer);
 		});
 
-		done();
+		for (let i = 0; i < recipients.length; i++) {
+			pnktToken.methods.transfer(recipients[i], "1000").send({
+				from: coinbase
+			});
+		}
 	});
 
-	for (let i = 0; i < recipients.length; i++) {
-		await new Promise((resolve) => {
-			setTimeout(async () => {
-				pnktToken.methods.transfer(recipients[i], "1000").send({
-					from: coinbase
-				});
-				resolve(true);
-			}, 0);
-		});
-	}
+	expect(erc20Transfer).toMatchObject({
+		address: pnktToken.options.address,
+		from: coinbase.toLowerCase(),
+		to: address,
+		value: "1000"
+	});
 });
