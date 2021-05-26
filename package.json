@@ -1,16 +1,7 @@
 {
 	"name": "eth-address-observer",
-	"version": "0.5.5",
+	"version": "0.6.0",
 	"description": "Ethereum addresses observer for poonkt.io",
-	"main": "dist/index.js",
-	"typings": "typings/index.d.ts",
-	"scripts": {
-		"dev": "nodemon",
-		"build": "npm run clean && tsc",
-		"clean": "del-cli ./dist && del-cli ./typings",
-		"lint": "npx eslint . --ext .ts,.tsx",
-		"test": "jest --ci --forceExit --runInBand"
-	},
 	"keywords": [
 		"eth",
 		"ether",
@@ -25,36 +16,45 @@
 		"watch",
 		"poonkt"
 	],
-	"author": "Vitaly Snitovets",
-	"license": "LGPL-3.0-or-later",
-	"dependencies": {
-		"@types/bintrees": "^1.0.2",
-		"tslib": "2.0.3",
-		"web3": "^1.3.0"
-	},
-	"devDependencies": {
-		"@openzeppelin/contracts": "^3.4.0",
-		"@types/jest": "^26.0.14",
-		"@typescript-eslint/eslint-plugin": "^4.4.1",
-		"@typescript-eslint/parser": "^4.4.1",
-		"del-cli": "^3.0.1",
-		"dotenv": "^8.2.0",
-		"eslint": "^7.11.0",
-		"eslint-config-prettier": "^6.12.0",
-		"eslint-plugin-jest": "^24.1.0",
-		"ethereum-waffle": "^3.2.2",
-		"jest": "^26.5.3",
-		"nodemon": "^2.0.5",
-		"ts-jest": "^26.4.1",
-		"ts-node": "^9.0.0",
-		"typescript": "^4.0.3"
+	"homepage": "https://github.com/poonkt/eth-address-observer#readme",
+	"bugs": {
+		"url": "https://github.com/poonkt/eth-address-observer/issues"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/poonkt/eth-address-observer.git"
 	},
-	"bugs": {
-		"url": "https://github.com/poonkt/eth-address-observer/issues"
+	"license": "LGPL-3.0-or-later",
+	"author": "Vitaly Snitovets",
+	"main": "dist/index.js",
+	"typings": "typings/index.d.ts",
+	"scripts": {
+		"dev": "nodemon",
+		"build": "npm run clean && tsc",
+		"clean": "del-cli ./dist && del-cli ./typings",
+		"lint": "npx eslint . --ext .ts,.tsx",
+		"test": "jest --ci --forceExit --runInBand"
 	},
-	"homepage": "https://github.com/poonkt/eth-address-observer#readme"
+	"dependencies": {
+		"@types/bintrees": "^1.0.3",
+		"tslib": "2.2.0",
+		"web3": "^1.3.6"
+	},
+	"devDependencies": {
+		"@openzeppelin/contracts": "^4.1.0",
+		"@types/jest": "^26.0.23",
+		"@typescript-eslint/eslint-plugin": "^4.25.0",
+		"@typescript-eslint/parser": "^4.25.0",
+		"del-cli": "^3.0.1",
+		"dotenv": "^10.0.0",
+		"eslint": "^7.27.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-jest": "^24.3.6",
+		"ethereum-waffle": "^3.3.0",
+		"jest": "^27.0.1",
+		"nodemon": "^2.0.7",
+		"ts-jest": "^27.0.0",
+		"ts-node": "^10.0.0",
+		"typescript": "^4.2.4"
+	}
 }

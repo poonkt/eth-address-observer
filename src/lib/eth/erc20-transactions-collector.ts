@@ -21,7 +21,6 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 import Web3 from "web3";
 import { Log } from "web3-core";
 import { EventEmitter } from "events";
-import { CollectorCache } from "../collector-cache";
 import RBTree from "../../vendor/bintrees/lib/rbtree";
 
 export interface ERC20Transfer {
@@ -35,57 +34,44 @@ export interface ERC20Transfer {
 
 export class ERC20TransactionsCollector extends EventEmitter {
 	private readonly web3: Web3;
-	private readonly erc20TransactionsCollectorCache: CollectorCache<string>;
 	private readonly watchList: RBTree;
 
-	constructor(web3: Web3, erc20CacheSize: number, watchList: RBTree) {
+	constructor(web3: Web3, watchList: RBTree) {
 		super();
 		this.web3 = web3;
-		this.erc20TransactionsCollectorCache = new CollectorCache(erc20CacheSize);
 		this.watchList = watchList;
-
-		this.listen();
 	}
 
-	listen(): void {
-		this.web3.eth
-			.subscribe("logs", {
-				topics: [
-					"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" /** keccak packed Transfer(address,address,uint256) event interface */
-				]
-			})
-			.on("data", (log) => {
-				this.erc20TransactionsCollectorCache.add(log.transactionHash, (error) => {
-					if (!error) {
-						const foundTransaction = this.search(log);
+	async add(logs: Log[]): Promise<void> {
+		const foundTransfers = this.search(logs);
 
-						if (foundTransaction) {
-							this.emit("new-transfer", foundTransaction);
-						}
-					}
-				});
-			})
-			.on("error", (error) => {
-				console.error(error);
-			});
+		if (!foundTransfers.length) return;
+
+		foundTransfers.forEach((transfer) => {
+			this.emit("new-transfer", transfer);
+		});
 	}
 
-	private search(log: Log): ERC20Transfer | undefined {
-		const { data, topics, address, transactionHash } = log;
-		let [, from, to] = topics;
+	private search(logs: Log[]): ERC20Transfer[] {
+		const foundTransfers = logs.map((log) => {
+			const { data, topics, address, transactionHash } = log;
+			let [, from, to] = topics;
 
-		if (!from || !to) {
-			return;
-		}
+			if (!from || !to) {
+				return;
+			}
 
-		to = this.decode(to);
+			to = this.decode(to);
 
-		if (this.watchList.find(BigInt(to)) !== null) {
-			from = this.decode(from);
-			const value = this.web3.utils.hexToNumberString(data);
+			if (this.watchList.find(BigInt(to)) !== null) {
+				from = this.decode(from);
+				const value = this.web3.utils.hexToNumberString(data);
 
-			return { hash: transactionHash, address, from, to, value, log };
-		}
+				return { hash: transactionHash, address, from, to, value, log };
+			}
+		});
+
+		return foundTransfers.filter(Boolean);
 	}
 
 	private decode(hex: string): string {

@@ -13,6 +13,7 @@ export declare class Transaction extends EventEmitter {
     private transaction?;
     private transactionReceipt?;
     private blockHash;
+    private confirmations;
     constructor(web3: Web3, transactionHash: string, confirmationsRequired: number);
     init(): Promise<void>;
     process(latestBlockNumber: number): Promise<void>;

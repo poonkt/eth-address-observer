@@ -35,13 +35,19 @@ export class EthBlocksCollector extends EventEmitter {
 	}
 
 	listen(): void {
-		this.web3.eth.subscribe("newBlockHeaders").on("data", (blockHeader) => {
-			this.blocksCollectorCache.add(blockHeader.number, (error) => {
-				console.log("block:", blockHeader.number);
-				if (!error) {
-					this.emit("new-block", blockHeader.number);
-				}
+		const subscription = this.web3.eth
+			.subscribe("newBlockHeaders")
+			.on("data", (blockHeader) => {
+				this.blocksCollectorCache.add(blockHeader.number, (error) => {
+					if (!error) {
+						this.emit("new-block", blockHeader.number);
+					}
+				});
+			})
+			.on("error", () => {
+				subscription.unsubscribe(() => {
+					this.listen();
+				});
 			});
-		});
 	}
 }
