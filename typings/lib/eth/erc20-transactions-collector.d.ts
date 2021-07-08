@@ -19,7 +19,8 @@ export interface ERC20Transfer {
 export declare class ERC20TransactionsCollector extends EventEmitter {
     private readonly web3;
     private readonly watchList;
-    constructor(web3: Web3, watchList: RBTree);
+    private readonly tranfersCollectorCache;
+    constructor(web3: Web3, watchList: RBTree, tranfersCacheSize: number);
     add(logs: Log[]): Promise<void>;
     private search;
     private decode;

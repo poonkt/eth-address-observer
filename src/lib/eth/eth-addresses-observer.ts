@@ -42,17 +42,20 @@ export type SubscriptionType =
 export class EthAddressesObserver extends AddressesObserver {
 	private readonly web3: Web3;
 
-	private ethBlocksCollector: EthBlocksCollector;
+	private readonly ethBlocksCollector: EthBlocksCollector;
 
-	private ethTransactionsCollector: EthTransactionsCollector;
-	private ethTransactionsManager: TransactionsManager;
+	private readonly ethTransactionsCollector: EthTransactionsCollector;
+	private readonly ethTransactionsManager: TransactionsManager;
 
-	private erc20TransactionsCollector: ERC20TransactionsCollector;
-	private erc20TransactionsManager: TransactionsManager;
+	private readonly erc20TransactionsCollector: ERC20TransactionsCollector;
+	private readonly erc20TransactionsManager: TransactionsManager;
+
+	private readonly retryQueue: Set<string>;
 
 	constructor(web3: Web3, config?: EthAddressesObserverConfig) {
 		const _config = {
-			blocksCacheSize: config?.blocksCacheSize || 64,
+			transactionsCacheSize: config?.transactionsCacheSize || 2048,
+			blocksCacheSize: config?.blocksCacheSize || 128,
 			confirmationsRequired: config?.confirmationsRequired || 12,
 			erc20: {
 				confirmationsRequired: config?.erc20?.confirmationsRequired || 12,
@@ -62,18 +65,32 @@ export class EthAddressesObserver extends AddressesObserver {
 
 		super(_config as AddressesObserverConfig);
 
+		this.retryQueue = new Set();
+
 		this.web3 = web3;
 
 		this.ethBlocksCollector = new EthBlocksCollector(web3, _config.blocksCacheSize);
 
-		this.ethTransactionsCollector = new EthTransactionsCollector(this.watchList);
+		this.ethTransactionsCollector = new EthTransactionsCollector(this.watchList, _config.transactionsCacheSize);
 		this.ethTransactionsManager = new TransactionsManager(web3, _config.confirmationsRequired);
 
-		this.erc20TransactionsCollector = new ERC20TransactionsCollector(web3, this.watchList);
+		this.erc20TransactionsCollector = new ERC20TransactionsCollector(
+			web3,
+			this.watchList,
+			_config.transactionsCacheSize
+		);
 		this.erc20TransactionsManager = new TransactionsManager(web3, _config.erc20.confirmationsRequired);
 
-		this.ethBlocksCollector.on("new-block", (latestBlockNumber: number) => {
-			this.process(latestBlockNumber);
+		this.ethBlocksCollector.on("block", (blockHash: string) => {
+			this.collectTransactions(blockHash);
+		});
+		this.ethBlocksCollector.on("new-block", (blockNumber: number) => {
+			this.retryQueue.forEach((blockHash) => {
+				this.collectTransactions(blockHash);
+			});
+			this.retryQueue.clear();
+
+			this.processCycle(blockNumber);
 		});
 
 		this.ethTransactionsCollector.on("new-transaction", (transactionHash: string) => {
@@ -111,21 +128,31 @@ export class EthAddressesObserver extends AddressesObserver {
 		return address;
 	}
 
-	private async process(blockNumber: number) {
+	private async collectTransactions(blockHash: string) {
 		try {
-			const { transactions } = await this.web3.eth.getBlock(blockNumber, true);
+			const block = await this.web3.eth.getBlock(blockHash, true);
+
+			if (!block) return;
+
+			const { transactions, number } = block;
 			const logs = await this.web3.eth.getPastLogs({
-				fromBlock: blockNumber,
+				fromBlock: number,
 				topics: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
 			});
 
 			this.ethTransactionsCollector.add(transactions);
-			this.ethTransactionsManager.process(blockNumber);
-
 			this.erc20TransactionsCollector.add(logs);
+		} catch (error) {
+			this.retryQueue.add(blockHash);
+		}
+	}
+
+	private async processCycle(blockNumber: number) {
+		try {
+			this.ethTransactionsManager.process(blockNumber);
 			this.erc20TransactionsManager.process(blockNumber);
 		} catch (error) {
-			this.process(blockNumber);
+			this.processCycle(blockNumber);
 		}
 	}
 
