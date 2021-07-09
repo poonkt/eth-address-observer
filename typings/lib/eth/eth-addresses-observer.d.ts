@@ -14,16 +14,18 @@ export interface EthAddressesObserverConfig extends Partial<AddressesObserverCon
 export declare type SubscriptionType = "pending" | "confirmation" | "success" | "transfer-pending" | "transfer-confirmation" | "transfer-success";
 export declare class EthAddressesObserver extends AddressesObserver {
     private readonly web3;
-    private ethBlocksCollector;
-    private ethTransactionsCollector;
-    private ethTransactionsManager;
-    private erc20TransactionsCollector;
-    private erc20TransactionsManager;
+    private readonly ethBlocksCollector;
+    private readonly ethTransactionsCollector;
+    private readonly ethTransactionsManager;
+    private readonly erc20TransactionsCollector;
+    private readonly erc20TransactionsManager;
+    private readonly retryQueue;
     constructor(web3: Web3, config?: EthAddressesObserverConfig);
     subscribe(type: SubscriptionType, handler: (...args: any[]) => void): void;
     toBigInt(address: string): bigint;
     toAddress(number: bigint): string;
-    private process;
+    private collectTransactions;
+    private processCycle;
     private addTransaction;
     private addErc20Transfer;
 }

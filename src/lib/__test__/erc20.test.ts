@@ -25,8 +25,6 @@ import { abi, bytecode } from "./contracts/BasicToken.json";
 import { addressGenerator, generateAddressesList, shuffleAddressToList } from "./utils/address";
 import { ERC20Transfer } from "../eth/erc20-transactions-collector";
 
-jest.setTimeout(60000);
-
 const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);
 
@@ -44,6 +42,10 @@ beforeAll(async () => {
 	pnktToken = await contract
 		.deploy({ data: bytecode, arguments: ["1000000000000000000", "Poonkt Token", "PNKT"] })
 		.send({ from: coinbase, gas: 3000000 });
+});
+
+afterAll(() => {
+	provider.disconnect(1000, "Successful disconnect");
 });
 
 it("Catch incoming transfer to observable address", async () => {

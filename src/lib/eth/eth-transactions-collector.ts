@@ -20,14 +20,17 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Transaction } from "web3-core";
 import { EventEmitter } from "events";
+import { CollectorCache } from "../collector-cache";
 import RBTree from "../../vendor/bintrees/lib/rbtree";
 
 export class EthTransactionsCollector extends EventEmitter {
 	private readonly watchList: RBTree;
+	private readonly transactionsCollectorCache: CollectorCache<string>;
 
-	constructor(watchList: RBTree) {
+	constructor(watchList: RBTree, transactionsCacheSize: number) {
 		super();
 		this.watchList = watchList;
+		this.transactionsCollectorCache = new CollectorCache(transactionsCacheSize);
 	}
 
 	async add(transactions: Transaction[]): Promise<void> {
@@ -42,9 +45,17 @@ export class EthTransactionsCollector extends EventEmitter {
 
 	private search(transactions: Transaction[]): string[] {
 		const foundTransactionsHash = transactions.map((transaction) => {
-			if (transaction.to && this.watchList.find(BigInt(transaction.to)) !== null) {
-				return transaction.hash;
-			}
+			let hash: string | undefined;
+
+			this.transactionsCollectorCache.add(transaction.hash, (error) => {
+				if (!error) {
+					if (transaction.to && this.watchList.find(BigInt(transaction.to)) !== null) {
+						hash = transaction.hash;
+					}
+				}
+			});
+
+			return hash;
 		});
 
 		return foundTransactionsHash.filter(Boolean);

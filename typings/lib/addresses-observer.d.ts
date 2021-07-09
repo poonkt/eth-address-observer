@@ -9,6 +9,7 @@ import RBTree from "../vendor/bintrees/lib/rbtree";
 export interface AddressesObserverConfig {
     confirmationsRequired: number;
     blocksCacheSize?: number;
+    transactionsCacheSize?: number;
 }
 export declare abstract class AddressesObserver extends EventEmitter {
     watchList: RBTree;

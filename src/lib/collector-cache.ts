@@ -19,7 +19,7 @@ along with eth-address-observer.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 export class CollectorCache<T extends number | string> {
-	private readonly cache: T[];
+	readonly cache: T[];
 
 	constructor(cacheSize: number) {
 		this.cache = [];
