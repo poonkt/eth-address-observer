@@ -19,13 +19,16 @@ export declare class EthAddressesObserver extends AddressesObserver {
     private readonly ethTransactionsManager;
     private readonly erc20TransactionsCollector;
     private readonly erc20TransactionsManager;
-    private readonly retryQueue;
+    private readonly retryCollectTransactionsQueue;
+    private readonly retryAddTransactionQueue;
+    private readonly retryAddERC20TransferQueue;
     constructor(web3: Web3, config?: EthAddressesObserverConfig);
     subscribe(type: SubscriptionType, handler: (...args: any[]) => void): void;
     toBigInt(address: string): bigint;
     toAddress(number: bigint): string;
     private collectTransactions;
-    private processCycle;
     private addTransaction;
-    private addErc20Transfer;
+    private addERC20Transfer;
+    private processCycle;
+    private retry;
 }
