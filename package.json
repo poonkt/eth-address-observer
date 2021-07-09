@@ -1,6 +1,6 @@
 {
 	"name": "eth-address-observer",
-	"version": "0.6.0",
+	"version": "0.7.0",
 	"description": "Ethereum addresses observer for poonkt.io",
 	"keywords": [
 		"eth",
@@ -33,28 +33,39 @@
 		"build": "npm run clean && tsc",
 		"clean": "del-cli ./dist && del-cli ./typings",
 		"lint": "npx eslint . --ext .ts,.tsx",
-		"test": "jest --ci --forceExit --runInBand"
+		"test": "jest --ci --runInBand ./src/lib/__test__/erc20",
+		"test:ci": "docker-compose -f docker-compose.test.yml up --abort-on-container-exit -V --build"
 	},
 	"dependencies": {
 		"@types/bintrees": "^1.0.3",
-		"tslib": "2.2.0",
-		"web3": "^1.3.6"
+		"tslib": "2.3.0",
+		"web3": "^1.4.0"
 	},
 	"devDependencies": {
-		"@openzeppelin/contracts": "^4.1.0",
+		"@openzeppelin/contracts": "^4.2.0",
 		"@types/jest": "^26.0.23",
-		"@typescript-eslint/eslint-plugin": "^4.25.0",
-		"@typescript-eslint/parser": "^4.25.0",
-		"del-cli": "^3.0.1",
+		"@typescript-eslint/eslint-plugin": "^4.28.2",
+		"@typescript-eslint/parser": "^4.28.2",
+		"del-cli": "^4.0.0",
 		"dotenv": "^10.0.0",
-		"eslint": "^7.27.0",
+		"eslint": "^7.30.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-jest": "^24.3.6",
-		"ethereum-waffle": "^3.3.0",
-		"jest": "^27.0.1",
-		"nodemon": "^2.0.7",
-		"ts-jest": "^27.0.0",
+		"ethereum-waffle": "^3.4.0",
+		"jest": "^27.0.6",
+		"nodemon": "^2.0.9",
+		"ts-jest": "^27.0.3",
 		"ts-node": "^10.0.0",
-		"typescript": "^4.2.4"
+		"typescript": "^4.3.5"
+	},
+	"jest": {
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"setupFilesAfterEnv": [
+			"./src/test/setup.ts"
+		],
+		"modulePathIgnorePatterns": [
+			"<rootDir>/src/lib/__test__/utils"
+		]
 	}
 }

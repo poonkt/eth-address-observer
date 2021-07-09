@@ -25,6 +25,10 @@ const generator = addressGenerator();
 const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);
 
+afterAll(() => {
+	provider.disconnect(1000, "Successful disconnect");
+});
+
 test("Should insert 1000000 addresses to watch-list (string)", async () => {
 	const observer = new EthAddressesObserver(web3);
 

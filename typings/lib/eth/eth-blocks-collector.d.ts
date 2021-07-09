@@ -8,7 +8,10 @@ import Web3 from "web3";
 import { EventEmitter } from "events";
 export declare class EthBlocksCollector extends EventEmitter {
     private readonly web3;
+    private readonly provider;
     private readonly blocksCollectorCache;
+    private subscription;
     constructor(web3: Web3, blocksCacheSize: number);
     listen(): void;
+    private rescan;
 }

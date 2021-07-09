@@ -22,6 +22,7 @@ import Web3 from "web3";
 import { Log } from "web3-core";
 import { EventEmitter } from "events";
 import RBTree from "../../vendor/bintrees/lib/rbtree";
+import { CollectorCache } from "../collector-cache";
 
 export interface ERC20Transfer {
 	hash: string;
@@ -35,11 +36,13 @@ export interface ERC20Transfer {
 export class ERC20TransactionsCollector extends EventEmitter {
 	private readonly web3: Web3;
 	private readonly watchList: RBTree;
+	private readonly tranfersCollectorCache: CollectorCache<string>;
 
-	constructor(web3: Web3, watchList: RBTree) {
+	constructor(web3: Web3, watchList: RBTree, tranfersCacheSize: number) {
 		super();
 		this.web3 = web3;
 		this.watchList = watchList;
+		this.tranfersCollectorCache = new CollectorCache(tranfersCacheSize);
 	}
 
 	async add(logs: Log[]): Promise<void> {
@@ -61,14 +64,22 @@ export class ERC20TransactionsCollector extends EventEmitter {
 				return;
 			}
 
-			to = this.decode(to);
+			let transfer: ERC20Transfer | undefined;
 
-			if (this.watchList.find(BigInt(to)) !== null) {
-				from = this.decode(from);
-				const value = this.web3.utils.hexToNumberString(data);
+			this.tranfersCollectorCache.add(transactionHash, (error) => {
+				if (!error) {
+					to = this.decode(to);
 
-				return { hash: transactionHash, address, from, to, value, log };
-			}
+					if (this.watchList.find(BigInt(to)) !== null) {
+						from = this.decode(from);
+						const value = this.web3.utils.hexToNumberString(data);
+
+						transfer = { hash: transactionHash, address, from, to, value, log };
+					}
+				}
+			});
+
+			return transfer;
 		});
 
 		return foundTransfers.filter(Boolean);

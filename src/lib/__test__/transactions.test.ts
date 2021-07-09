@@ -22,10 +22,12 @@ import { EthAddressesObserver } from "../eth/eth-addresses-observer";
 import { addressGenerator, generateAddressesList, shuffleAddressToList } from "./utils/address";
 const generator = addressGenerator();
 
-jest.setTimeout(120000);
-
 const provider = new Web3.providers.WebsocketProvider(`ws://geth:8546`);
 const web3 = new Web3(provider);
+
+afterAll(() => {
+	provider.disconnect(1000, "Successful disconnect");
+});
 
 test("Should detect pending transaction in flood of transactions", async () => {
 	const coinbase = await web3.eth.getCoinbase();

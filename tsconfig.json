@@ -15,5 +15,5 @@
 			"typings": ["typings"]
 		}
 	},
-	"exclude": ["dist", "src/lib/__tests__", "jest.config.js", "sample.ts"]
+	"exclude": ["dist", "src/lib/__test__", "jest.config.js", "sample.ts"]
 }

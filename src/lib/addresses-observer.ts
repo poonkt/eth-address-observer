@@ -24,6 +24,7 @@ import RBTree from "../vendor/bintrees/lib/rbtree";
 export interface AddressesObserverConfig {
 	confirmationsRequired: number;
 	blocksCacheSize?: number;
+	transactionsCacheSize?: number;
 }
 
 export abstract class AddressesObserver extends EventEmitter {
@@ -35,7 +36,8 @@ export abstract class AddressesObserver extends EventEmitter {
 		}
 		super();
 		this.watchList = new RBTree((a: bigint, b: bigint) => a - b);
-		config.blocksCacheSize = config.blocksCacheSize || 64;
+		config.blocksCacheSize = config.blocksCacheSize || 128;
+		config.transactionsCacheSize = config.transactionsCacheSize || 2048;
 	}
 
 	add(address: string | string[]): void {
