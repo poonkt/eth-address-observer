@@ -50,7 +50,9 @@ export class EthAddressesObserver extends AddressesObserver {
 	private readonly erc20TransactionsCollector: ERC20TransactionsCollector;
 	private readonly erc20TransactionsManager: TransactionsManager;
 
-	private readonly retryQueue: Set<string>;
+	private readonly retryCollectTransactionsQueue: Set<string>;
+	private readonly retryAddTransactionQueue: Set<string>;
+	private readonly retryAddERC20TransferQueue: Set<ERC20Transfer>;
 
 	constructor(web3: Web3, config?: EthAddressesObserverConfig) {
 		const _config = {
@@ -64,8 +66,6 @@ export class EthAddressesObserver extends AddressesObserver {
 		};
 
 		super(_config as AddressesObserverConfig);
-
-		this.retryQueue = new Set();
 
 		this.web3 = web3;
 
@@ -81,14 +81,17 @@ export class EthAddressesObserver extends AddressesObserver {
 		);
 		this.erc20TransactionsManager = new TransactionsManager(web3, _config.erc20.confirmationsRequired);
 
+		this.retryCollectTransactionsQueue = new Set();
+		this.retryAddTransactionQueue = new Set();
+		this.retryAddERC20TransferQueue = new Set();
+
 		this.ethBlocksCollector.on("block", (blockHash: string) => {
 			this.collectTransactions(blockHash);
 		});
 		this.ethBlocksCollector.on("new-block", (blockNumber: number) => {
-			this.retryQueue.forEach((blockHash) => {
-				this.collectTransactions(blockHash);
-			});
-			this.retryQueue.clear();
+			this.retry(this.retryCollectTransactionsQueue, this.collectTransactions.bind(this));
+			this.retry(this.retryAddTransactionQueue, this.addTransaction.bind(this));
+			this.retry(this.retryAddERC20TransferQueue, this.addERC20Transfer.bind(this));
 
 			this.processCycle(blockNumber);
 		});
@@ -97,7 +100,7 @@ export class EthAddressesObserver extends AddressesObserver {
 			this.addTransaction(transactionHash);
 		});
 		this.erc20TransactionsCollector.on("new-transfer", (transfer: ERC20Transfer) => {
-			this.addErc20Transfer(transfer);
+			this.addERC20Transfer(transfer);
 		});
 	}
 
@@ -143,7 +146,23 @@ export class EthAddressesObserver extends AddressesObserver {
 			this.ethTransactionsCollector.add(transactions);
 			this.erc20TransactionsCollector.add(logs);
 		} catch (error) {
-			this.retryQueue.add(blockHash);
+			this.retryCollectTransactionsQueue.add(blockHash);
+		}
+	}
+
+	private async addTransaction(transactionHash: string) {
+		try {
+			await this.ethTransactionsManager.add(transactionHash);
+		} catch (error) {
+			this.retryAddTransactionQueue.add(transactionHash);
+		}
+	}
+
+	private async addERC20Transfer(transfer: ERC20Transfer) {
+		try {
+			await this.erc20TransactionsManager.add(transfer.log.transactionHash, transfer);
+		} catch (error) {
+			this.retryAddERC20TransferQueue.add(transfer);
 		}
 	}
 
@@ -156,19 +175,12 @@ export class EthAddressesObserver extends AddressesObserver {
 		}
 	}
 
-	private async addTransaction(transactionHash: string) {
-		try {
-			await this.ethTransactionsManager.add(transactionHash);
-		} catch (error) {
-			this.addTransaction(transactionHash);
-		}
-	}
-
-	private async addErc20Transfer(transfer: ERC20Transfer) {
-		try {
-			await this.erc20TransactionsManager.add(transfer.log.transactionHash, transfer);
-		} catch (error) {
-			this.addErc20Transfer(transfer);
+	private async retry(set: Set<string | ERC20Transfer>, f: (data: string | ERC20Transfer) => Promise<void>) {
+		if (set.size) {
+			set.forEach((data) => {
+				f(data);
+			});
+			set.clear();
 		}
 	}
 }
