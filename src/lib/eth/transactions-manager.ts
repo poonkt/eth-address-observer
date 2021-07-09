@@ -35,7 +35,7 @@ export class TransactionsManager extends EventEmitter {
 	}
 
 	async add(transactionHash: string, payload?: unknown): Promise<void> {
-		const ethTransaction = new Transaction(this.web3, transactionHash, this.confirmationsRequired);
+		let ethTransaction = new Transaction(this.web3, transactionHash, this.confirmationsRequired);
 
 		ethTransaction.on("pending", (transactionHash: string) => {
 			this.emit("pending", transactionHash, payload);
@@ -48,9 +48,16 @@ export class TransactionsManager extends EventEmitter {
 			this.emit("success", transactionHash, payload);
 		});
 
-		ethTransaction.init().then(() => {
-			this.transactions.set(transactionHash, ethTransaction);
-		});
+		try {
+			await ethTransaction.init();
+		} catch (error) {
+			ethTransaction.removeAllListeners();
+			ethTransaction = null;
+
+			throw new Error(error.message);
+		}
+
+		this.transactions.set(transactionHash, ethTransaction);
 	}
 
 	process(latestBlockNumber: number): void {
