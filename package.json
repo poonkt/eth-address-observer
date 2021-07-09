@@ -1,6 +1,6 @@
 {
 	"name": "eth-address-observer",
-	"version": "0.7.0",
+	"version": "0.7.1",
 	"description": "Ethereum addresses observer for poonkt.io",
 	"keywords": [
 		"eth",
