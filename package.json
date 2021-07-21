@@ -1,6 +1,6 @@
 {
 	"name": "eth-address-observer",
-	"version": "0.7.2",
+	"version": "0.7.3",
 	"description": "Ethereum addresses observer for poonkt.io",
 	"keywords": [
 		"eth",
@@ -33,8 +33,10 @@
 		"build": "npm run clean && tsc",
 		"clean": "del-cli ./dist && del-cli ./typings",
 		"lint": "npx eslint . --ext .ts,.tsx",
-		"test": "jest --ci --runInBand ./src/lib/__test__/erc20",
-		"test:ci": "docker-compose -f docker-compose.test.yml up --abort-on-container-exit -V --build"
+		"debug": "node --inspect=0.0.0.0:9229 -r ts-node/register node_modules/.bin/jest --runInBand --forceExit",
+		"test": "sh ./run-tests-isolated.sh",
+		"test:ci": "docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit -V",
+		"test:debug": "docker-compose -f docker-compose.debug.yml up --build --abort-on-container-exit -V"
 	},
 	"dependencies": {
 		"@types/bintrees": "^1.0.3",

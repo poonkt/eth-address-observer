@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  geth:
+    build:
+      context: ./geth
+      dockerfile: Dockerfile.test
+    ports:
+      - 30303:30303
+      - 8546:8546
+    stop_signal: SIGINT
+  eth-address-observer:
+    build:
+      context: .
+      dockerfile: Dockerfile.debug
+    environment:
+      - HOST=geth:8546
+    ports:
+      - 9229:9229
+    depends_on:
+      - geth
